@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="cldc-1.1-java5.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Jars/cldc-1.1-java5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
