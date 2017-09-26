@@ -34,8 +34,8 @@ public class ConstantSpeed extends PlugInComponent {
 		// Initiate PluginPPort
 		pportSpeed = new PluginPPort(this, "pportSpeed");
 		pportSpeed.write("fs|10");
-		rportFront = new PluginRPort(this, "rportFront", 20);
-		rportRear = new PluginRPort(this, "rportRear", 20);
+		rportFront = new PluginRPort(this, "rportFront", 0);
+		rportRear = new PluginRPort(this, "rportRear", 0);
 	}
 	
 	

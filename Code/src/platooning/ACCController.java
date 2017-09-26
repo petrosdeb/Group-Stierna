@@ -32,7 +32,14 @@ public class ACCController extends PlugInComponent {
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
+		writeSpeed = new PluginPPort(this, "writeSpeed");
+		writeSteer = new PluginPPort(this, "writeSteer");
+		writeLED = new PluginPPort(this, "writeLED");
+		
+		readFrontSpeed = new PluginRPort(this, "readFrontSpeed", 0);
+		readRearSpeed = new PluginRPort(this, "readRearSpeed", 0);
+		readPosition = new PluginRPort(this, "readPosition", 0);
+		
 		
 	}
 	

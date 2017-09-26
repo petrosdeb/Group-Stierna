@@ -7,7 +7,6 @@ public class ControllerSCU extends PlugInComponent {
 	
 	public PluginRPort readDistance;
 	public PluginRPort readIMU;
-	public PluginRPort rportFront;
 
 	@Override
 	public void run() {
