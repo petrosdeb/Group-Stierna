@@ -4,6 +4,7 @@
 
 import socket
 import sys
+import datetime
 from thread import *
 
 HOST = ''  # Symbolic name meaning all available interfaces
@@ -27,20 +28,69 @@ print 'Socket now listening'
 
 
 # Function for handling connections. This will be used to create threads
+def man():
+    print "I'm manual!"
+
+
+def acc():
+    print "I'm ACC!"
+
+
+def plt():
+    print "I'm platooning!"
+
+
+def doDrive(param):
+    print "I'm driving"
+
+
+def doSteer(param):
+    print "I'm steering"
+
+
 def clientthread(conn):
+    data_log = []
+
     # Sending message to connected client
-    conn.send('Welcome to the server. Type something and hit enter\n')  # send only takes string
+    conn.send('Connected to MOPED: ' + str(datetime.datetime.now()))  # send only takes string
 
     # infinite loop so that function do not terminate and thread do not end.
     while True:
 
         # Receiving from client
-        data = conn.recv(1024)
-        reply = 'OK...' + data
+        data = str(conn.recv(1024)).replace("\r\n", "")
+
+        data_log.append(data)
+
         if not data:
             break
 
-        conn.sendall(reply)
+        # print 'r: ' + data + '\n'
+        # Drive
+        if data.startswith('d'):
+            doDrive(int(data[1:]))
+            print "Drive: " + data[1:]
+
+        # Steer
+        elif data.startswith('s'):
+            doSteer(int(data[1:]))
+            print "Steer: " + data[1:]
+
+
+        # Manual
+        elif data.startswith('m'):
+            man()
+            print "Switch to manual mode\n"
+
+        # ACC
+        elif data.startswith('a'):
+            acc()
+            print "Switch to acc mode\n"
+
+        # Platooning
+        elif data.startswith('p'):
+            plt()
+            print "Switch to platooning  mode\n"
 
     # came out of loop
     conn.close()
