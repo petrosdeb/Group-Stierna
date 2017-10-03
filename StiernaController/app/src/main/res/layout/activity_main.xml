@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="groupstierna.stiernacontroller.MainActivity">
+
+    <RadioGroup
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/manualMode" android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent" android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="8dp" android:id="@+id/radioGroup2"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp">
+        <RadioButton
+                android:text="Manual control"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/manualMode"
+                tools:layout_conversion_absoluteX="0dp"
+                tools:layout_conversion_absoluteY="563dp" tools:layout_conversion_absoluteWidth="411dp"
+                tools:layout_conversion_absoluteHeight="38dp" tools:layout_editor_absoluteY="563dp"
+                tools:layout_editor_absoluteX="8dp" android:layout_weight="1"/>
+        <RadioButton
+                android:text="Adaptive Cruise Control"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/accMode" tools:layout_conversion_absoluteX="0dp"
+                tools:layout_conversion_absoluteY="507dp" tools:layout_conversion_absoluteWidth="411dp"
+                tools:layout_conversion_absoluteHeight="38dp" tools:layout_editor_absoluteY="507dp"
+                tools:layout_editor_absoluteX="8dp" android:layout_weight="1"/>
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/platooningMode" android:layout_weight="1"
+                android:text="Platooning"/>
+    </RadioGroup>
+    <TextView
+            android:text="Steering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/textViewSteering"
+            android:layout_marginRight="8dp" app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/seekBarSteering"/>
+    <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/seekBarSteering"
+            android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent" android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/textViewManualSpeed"/>
+    <TextView
+            android:text="Speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/textViewManualSpeed"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/seekBarManualSpeed" android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent" android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+    <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/seekBarManualSpeed"
+            android:layout_marginRight="8dp" app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/textViewACCSpeed"/>
+    <TextView
+            android:text="ACC speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/textViewACCSpeed"
+            android:layout_marginRight="8dp" app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/seekBarACCSpeed"/>
+    <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/seekBarACCSpeed"
+            tools:layout_conversion_absoluteX="0dp"
+            tools:layout_conversion_absoluteY="545dp" tools:layout_conversion_absoluteWidth="411dp"
+            tools:layout_conversion_absoluteHeight="18dp"
+            android:layout_weight="1" android:layout_marginRight="8dp" app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginBottom="32dp"/>
+
+
+</android.support.constraint.ConstraintLayout>
