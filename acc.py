@@ -71,7 +71,12 @@ def acc(set_sp):
 		if get_d() < max_d:
 			delta_d = get_delta_d()
 			delta_v = get_delta_v(delta_d, update_time)
-			break_distance = calculate_break_distance(v + delta_v)
+			preceding_v = v + delta_v
+			break_distance = calculate_break_distance(preceding_v)
+			acceleration_speed = preceding_v/acceleration_interval
+			while get_d > break_distance and v > preceding_v:
+				v = v + acceleration_speed
+				accelerate(v)
 
 
 
