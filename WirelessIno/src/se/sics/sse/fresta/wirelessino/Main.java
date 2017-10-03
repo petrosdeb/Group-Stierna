@@ -12,6 +12,8 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import static se.sics.sse.fresta.wirelessino.Main.Mode.*;
+
 public class Main extends Activity {
     public static final String TAG = "WirelessIno";
     public static Socket socket = null;
@@ -27,8 +29,38 @@ public class Main extends Activity {
     private static final int ACC_INDEX = 3;    // Menu bar: toggle ACC
     private static final int PLATOONING_INDEX = 4;    // Menu bar: toggle platooning
 
-    private static final String ACC_MESSAGE = "ACC";
-    private static final String PLATOONING_MESSAGE = "platooning";
+    private static final String ACC_MESSAGE = "acc";
+    private static final String PLATOONING_MESSAGE = "pla";
+    private static final String MANUAL_MESSAGE = "man";
+
+    private static Mode mode = MANUAL;
+
+    public static enum Mode {
+        MANUAL(MANUAL_MESSAGE),
+        ACC(ACC_MESSAGE, ACC_INDEX),
+        PLATOONING(PLATOONING_MESSAGE, PLATOONING_INDEX);
+
+        private final String message;
+        private final int index;
+
+        Mode(String message) {
+            this.message = message;
+            index = -1;
+        }
+
+        Mode(String message, int index) {
+            this.message = message;
+            this.index = index;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,19 +144,26 @@ public class Main extends Activity {
                 startActivity(i);
                 break;
             case ACC_INDEX:
-                if (socket != null) {
-                    // Send ACC toggle message + current requested speed
-                    send(ACC_MESSAGE + " " + Options.getInstance().getLBarValue());
-                }
-                break;
             case PLATOONING_INDEX:
-                if (socket != null) {
-                    send(PLATOONING_MESSAGE);
-                }
+                toggleMode(item.getItemId());
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // Changes mode to relevant state
+    public void toggleMode(int modeTrigger) {
+        if(socket != null) {
+            if (mode.index == modeTrigger) {
+                mode = MANUAL;
+            } else if (modeTrigger == ACC_INDEX) {
+                mode = ACC;
+            } else {
+                mode = PLATOONING;
+            }
+            send(mode.message);
+        }
     }
 
     /*
