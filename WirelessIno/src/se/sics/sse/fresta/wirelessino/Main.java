@@ -1,121 +1,201 @@
 package se.sics.sse.fresta.wirelessino;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-import android.os.Bundle;
-import android.app.Activity;
-import android.content.Intent;
-import android.view.Menu;
-import android.view.MenuItem;
+import static se.sics.sse.fresta.wirelessino.Main.Mode.*;
 
 public class Main extends Activity {
-	public static final String TAG = "WirelessIno";
-	public static Socket socket = null;
-	public static final boolean D = true; // The debug option
-	
-	private static PrintWriter out = null;
-	private PadView view = null;
-	private Menu menu = null;
-	
-	private static final int EXIT_INDEX = 0;		// Menu bar: exit  
-	private static final int DISCONNECT_INDEX = 1;	// Menu bar: disconnect
-	private static final int CONFIG_INDEX = 2	;	// Menu bar: WiFi configuration
+    public static final String TAG = "WirelessIno";
+    public static Socket socket = null;
+    public static final boolean D = true; // The debug option
 
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		
-		view = new PadView(this);
-		setContentView(view);
-	}
-	
-	/* 
-	 * Add a disconnect option when connected to a socket. 
-	 */
-	protected void onResume() {
-		/* Disable the disconnect option if no connection has been established */
-		updateMenuVisibility();
-		super.onResume();
-	}
-	
-	/* 
-	 * Add menu options 
-	 */
-	public boolean onCreateOptionsMenu(Menu menu) {
-		this.menu = menu;
-	
+    private static PrintWriter out = null;
+    private PadView view = null;
+    private Menu menu = null;
+
+    private static final int EXIT_INDEX = 0;        // Menu bar: exit
+    private static final int DISCONNECT_INDEX = 1;    // Menu bar: disconnect
+    private static final int CONFIG_INDEX = 2;    // Menu bar: WiFi configuration
+    private static final int ACC_INDEX = 3;    // Menu bar: toggle ACC
+    private static final int PLATOONING_INDEX = 4;    // Menu bar: toggle platooning
+
+    private static final String ACC_MESSAGE = "acc";
+    private static final String PLATOONING_MESSAGE = "pla";
+    private static final String MANUAL_MESSAGE = "man";
+
+    private static Mode mode = MANUAL;
+
+    public static enum Mode {
+        MANUAL(MANUAL_MESSAGE),
+        ACC(ACC_MESSAGE, ACC_INDEX),
+        PLATOONING(PLATOONING_MESSAGE, PLATOONING_INDEX);
+
+        private final String message;
+        private final int index;
+
+        Mode(String message) {
+            this.message = message;
+            index = -1;
+        }
+
+        Mode(String message, int index) {
+            this.message = message;
+            this.index = index;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
+
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        view = new PadView(this);
+        setContentView(view);
+    }
+
+    /*
+     * Add a disconnect option when connected to a socket.
+     */
+    protected void onResume() {
+        /* Disable the disconnect option if no connection has been established */
+        updateMenuVisibility();
+        super.onResume();
+    }
+
+    /*
+     * Add menu options
+     */
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+
 		/* Add menu bars */
-		menu.add(0, EXIT_INDEX, EXIT_INDEX, R.string.exit);
-		menu.add(0, DISCONNECT_INDEX, DISCONNECT_INDEX, R.string.disconnect);
-		menu.add(0, CONFIG_INDEX, CONFIG_INDEX, R.string.wifiConfig);
-		
+        menu.add(0, EXIT_INDEX, EXIT_INDEX, R.string.exit);
+        menu.add(0, DISCONNECT_INDEX, DISCONNECT_INDEX, R.string.disconnect);
+        menu.add(0, CONFIG_INDEX, CONFIG_INDEX, R.string.wifiConfig);
+        menu.add(0, ACC_INDEX, ACC_INDEX, "Toggle ACC");
+        menu.add(0, PLATOONING_INDEX, PLATOONING_INDEX, "Toggle platooning");
+
 		/* To start with, disable the disconnect option if no connection has been established */
-		updateMenuVisibility();
-		
-		return super.onCreateOptionsMenu(menu);
-	}
+        updateMenuVisibility();
 
-	/* 
-	 * Handle different menu options
-	 */
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == EXIT_INDEX) {
-			finish();
-		} 
-		else if (item.getItemId() == DISCONNECT_INDEX) {
-			try {
-				if (socket != null) {
-					socket.close();
-					socket = null;
-					
-					menu.getItem(DISCONNECT_INDEX).setVisible(false); // Hide the disconnect option
-					view.invalidate(); // Repaint (to show "not connected" in the main view)
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} 
-		else if (item.getItemId() == CONFIG_INDEX) {
-			Intent i = new Intent(Main.this, SocketConnector.class);
-			startActivity(i);
-		}
-		
-		return super.onOptionsItemSelected(item);
-	}
+        return super.onCreateOptionsMenu(menu);
+    }
 
-	/* 
-	 * Initialize the output stream for the socket.  
-	 */
-	public static void init(Socket socket) {
-		Main.socket = socket;
-		try {
-			out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-					socket.getOutputStream())), true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    /*
+     * Handle different menu options
+     */
+    public boolean onOptionsItemSelected(MenuItem item) {
+//		if (item.getItemId() == EXIT_INDEX) {
+//			finish();
+//		}
+//		else if (item.getItemId() == DISCONNECT_INDEX) {
+//			try {
+//				if (socket != null) {
+//					socket.close();
+//					socket = null;
+//
+//					menu.getItem(DISCONNECT_INDEX).setVisible(false); // Hide the disconnect option
+//					view.invalidate(); // Repaint (to show "not connected" in the main view)
+//				}
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		else if (item.getItemId() == CONFIG_INDEX) {
+//			Intent i = new Intent(Main.this, SocketConnector.class);
+//			startActivity(i);
+//		}
 
-	/*
-	 * Send a message through the socket.
-	 */
-	public static void send(Object message) {
-		out.println(message);
-	}
-	
-	/*
-	 * Checks if a socket connection has been established and updates
-	 * the visibility of the "disconnect" menu option accordingly.    
-	 */
-	private void updateMenuVisibility() {
-		if (menu != null) {
-			if (socket == null || !socket.isConnected()) 
-				menu.getItem(DISCONNECT_INDEX).setVisible(false);
-			else
-				menu.getItem(DISCONNECT_INDEX).setVisible(true);
-		}
-	}
+        switch (item.getItemId()) {
+            case EXIT_INDEX:
+                finish();
+                break;
+            case DISCONNECT_INDEX:
+                try {
+                    if (socket != null) {
+                        socket.close();
+                        socket = null;
+
+                        menu.getItem(DISCONNECT_INDEX).setVisible(false); // Hide the disconnect option
+                        view.invalidate(); // Repaint (to show "not connected" in the main view)
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case CONFIG_INDEX:
+                Intent i = new Intent(Main.this, SocketConnector.class);
+                startActivity(i);
+                break;
+            case ACC_INDEX:
+            case PLATOONING_INDEX:
+                toggleMode(item.getItemId());
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    // Changes mode to relevant state
+    public void toggleMode(int modeTrigger) {
+        if(socket != null) {
+            if (mode.index == modeTrigger) {
+                mode = MANUAL;
+            } else if (modeTrigger == ACC_INDEX) {
+                mode = ACC;
+            } else {
+                mode = PLATOONING;
+            }
+            send(mode.message);
+        }
+    }
+
+    /*
+     * Initialize the output stream for the socket.
+     */
+    public static void init(Socket socket) {
+        Main.socket = socket;
+        try {
+            out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+                    socket.getOutputStream())), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+     * Send a message through the socket.
+     */
+    public static void send(Object message) {
+        out.println(message);
+    }
+
+    /*
+     * Checks if a socket connection has been established and updates
+     * the visibility of the "disconnect" menu option accordingly.
+     */
+    private void updateMenuVisibility() {
+        if (menu != null) {
+            if (socket == null || !socket.isConnected())
+                menu.getItem(DISCONNECT_INDEX).setVisible(false);
+            else
+                menu.getItem(DISCONNECT_INDEX).setVisible(true);
+        }
+    }
 }
