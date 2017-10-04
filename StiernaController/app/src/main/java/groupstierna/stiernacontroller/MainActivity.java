@@ -20,6 +20,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextIPNumber;
     private EditText editTextPortNumber;
     private TextView textViewConnectionStatus;
+    private TextView textViewSteeringDisplay;
+    private TextView textViewManualSpeedDisplay;
+    private TextView textViewACCSpeedDisplay;
 
     private boolean connectionStatus = false;
 
@@ -99,32 +102,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        radioGroup.setOnCheckedChangeListener(radioGroupChangeListener);
-
         seekBarSteering = (SeekBar) findViewById(R.id.seekBarSteering);
-        seekBarSteering.setOnSeekBarChangeListener(manualSeekBarChangeListener);
-
         seekBarManualSpeed = (SeekBar) findViewById(R.id.seekBarManualSpeed);
-        seekBarManualSpeed.setOnSeekBarChangeListener(manualSeekBarChangeListener);
-
         seekBarACCSpeed = (SeekBar) findViewById(R.id.seekBarACCSpeed);
-        seekBarACCSpeed.setOnSeekBarChangeListener(accSeekBarChangeListener);
-
         buttonUpdateConnection = (Button) findViewById(R.id.buttonUpdateConnection);
-        buttonUpdateConnection.setOnClickListener(updateConnectionOnClickListener);
 
         editTextIPNumber = (EditText) findViewById(R.id.textIPNumber);
         editTextPortNumber = (EditText) findViewById(R.id.textPortNumber);
         textViewConnectionStatus = (TextView) findViewById(R.id.textViewConnectionStatus);
+        textViewSteeringDisplay = (TextView) findViewById(R.id.textViewSteeringDisplay);
+        textViewManualSpeedDisplay = (TextView) findViewById(R.id.textViewManualSpeedDisplay);
+        textViewACCSpeedDisplay = (TextView) findViewById(R.id.textViewACCSpeedDisplay);
 
         setSeekBarDefaultValues();
+
+        radioGroup.setOnCheckedChangeListener(radioGroupChangeListener);
+        seekBarSteering.setOnSeekBarChangeListener(manualSeekBarChangeListener);
+        seekBarManualSpeed.setOnSeekBarChangeListener(manualSeekBarChangeListener);
+        seekBarACCSpeed.setOnSeekBarChangeListener(accSeekBarChangeListener);
+        buttonUpdateConnection.setOnClickListener(updateConnectionOnClickListener);
     }
 
     private void setSeekBarDefaultValues() {
         seekBarACCSpeed.setProgress(50);
         seekBarManualSpeed.setProgress(100);
         seekBarSteering.setProgress(100);
-
     }
 
     private static enum Keyword {
@@ -179,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
     public void updateControl() {
         updateSpeed();
         updateSteering();
+        textViewSteeringDisplay.setText(String.valueOf(seekBarSteering.getProgress() - 100));
+        textViewManualSpeedDisplay.setText(String.valueOf(seekBarManualSpeed.getProgress() - 100));
+        textViewACCSpeedDisplay.setText(String.valueOf(seekBarACCSpeed.getProgress()));
     }
 
     private void updateSpeed() {

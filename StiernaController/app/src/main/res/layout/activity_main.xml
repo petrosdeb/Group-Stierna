@@ -42,10 +42,10 @@
             android:text="Steering"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/textViewSteering"
-            android:layout_marginRight="8dp" app:layout_constraintRight_toRightOf="parent"
             android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/seekBarSteering"
-            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
+            android:layout_marginBottom="7dp" app:layout_constraintBottom_toTopOf="@+id/seekBarSteering"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+    />
     <SeekBar
             android:layout_width="0dp"
             android:layout_height="wrap_content" android:id="@+id/seekBarSteering"
@@ -59,8 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/textViewManualSpeed"
             android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/seekBarManualSpeed" android:layout_marginRight="8dp"
-            app:layout_constraintRight_toRightOf="parent" android:layout_marginLeft="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/seekBarManualSpeed"
+            android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent" android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"/>
     <SeekBar
@@ -75,9 +75,8 @@
             android:text="ACC speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" android:id="@+id/textViewACCSpeed"
-            android:layout_marginRight="8dp" app:layout_constraintRight_toRightOf="parent"
             android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginBottom="8dp" app:layout_constraintBottom_toTopOf="@+id/seekBarACCSpeed"
+            android:layout_marginBottom="7dp" app:layout_constraintBottom_toTopOf="@+id/seekBarACCSpeed"
             android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
     <SeekBar
             android:layout_width="0dp"
@@ -145,6 +144,27 @@
             android:id="@+id/textViewConnectionStatus"
             app:layout_constraintLeft_toRightOf="@+id/buttonUpdateConnection" android:layout_marginLeft="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/buttonUpdateConnection" android:layout_marginBottom="16dp"/>
+    <TextView
+            android:text="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewManualSpeedDisplay" app:layout_constraintLeft_toRightOf="@+id/textViewManualSpeed"
+            android:layout_marginLeft="8dp" app:layout_constraintTop_toTopOf="@+id/textViewManualSpeed"
+            android:layout_marginTop="0dp"/>
+    <TextView
+            android:text="50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewACCSpeedDisplay" app:layout_constraintLeft_toRightOf="@+id/textViewACCSpeed"
+            android:layout_marginLeft="8dp" app:layout_constraintTop_toTopOf="@+id/textViewACCSpeed"
+            android:layout_marginTop="0dp"/>
+    <TextView
+            android:text="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewSteeringDisplay" android:layout_marginTop="0dp"
+            app:layout_constraintTop_toTopOf="@+id/textViewSteering"
+            app:layout_constraintLeft_toRightOf="@+id/textViewSteering" android:layout_marginLeft="8dp"/>
 
 
 </android.support.constraint.ConstraintLayout>
