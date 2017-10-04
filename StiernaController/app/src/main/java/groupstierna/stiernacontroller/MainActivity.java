@@ -98,24 +98,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         radioGroup.setOnCheckedChangeListener(radioGroupChangeListener);
 
         seekBarSteering = (SeekBar) findViewById(R.id.seekBarSteering);
         seekBarSteering.setOnSeekBarChangeListener(manualSeekBarChangeListener);
-        seekBarSteering.setProgress(100);
 
         seekBarManualSpeed = (SeekBar) findViewById(R.id.seekBarManualSpeed);
         seekBarManualSpeed.setOnSeekBarChangeListener(manualSeekBarChangeListener);
-        seekBarManualSpeed.setProgress(100);
 
         seekBarACCSpeed = (SeekBar) findViewById(R.id.seekBarACCSpeed);
         seekBarACCSpeed.setOnSeekBarChangeListener(accSeekBarChangeListener);
-        seekBarACCSpeed.setProgress(50);
 
         buttonUpdateConnection = (Button) findViewById(R.id.buttonUpdateConnection);
         buttonUpdateConnection.setOnClickListener(updateConnectionOnClickListener);
@@ -123,6 +116,15 @@ public class MainActivity extends AppCompatActivity {
         editTextIPNumber = (EditText) findViewById(R.id.textIPNumber);
         editTextPortNumber = (EditText) findViewById(R.id.textPortNumber);
         textViewConnectionStatus = (TextView) findViewById(R.id.textViewConnectionStatus);
+
+        setSeekBarDefaultValues();
+    }
+
+    private void setSeekBarDefaultValues() {
+        seekBarACCSpeed.setProgress(50);
+        seekBarManualSpeed.setProgress(100);
+        seekBarSteering.setProgress(100);
+
     }
 
     private static enum Keyword {
@@ -138,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean updateMode(){
-        switch (radioGroup.getCheckedRadioButtonId()){
+    private boolean updateMode() {
+        switch (radioGroup.getCheckedRadioButtonId()) {
             case R.id.manualMode:
                 mode = Keyword.MANUAL;
                 break;
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
         }
 
-        if(!StiernaConnector.send(mode.getMessage())){
+        if (!StiernaConnector.send(mode.getMessage())) {
             updateConnectionStatus(false);
         }
         return true;
@@ -167,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateConnectionStatus(boolean status) {
         connectionStatus = status;
-        if(connectionStatus){
+        if (connectionStatus) {
             textViewConnectionStatus.setText(R.string.connected);
         } else {
             textViewConnectionStatus.setText(R.string.disconnected);
@@ -186,14 +188,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             speed = Integer.toString(seekBarACCSpeed.getProgress() - 100);
         }
-        if(!StiernaConnector.send(Keyword.DRIVE.getMessage() + " " + speed)){
+        if (!StiernaConnector.send(Keyword.DRIVE.getMessage() + " " + speed)) {
             updateConnectionStatus(false);
         }
     }
 
     private void updateSteering() {
         String steering = Integer.toString(seekBarSteering.getProgress() - 100);
-        if(!StiernaConnector.send(Keyword.STEER.getMessage() + " " + steering)){
+        if (!StiernaConnector.send(Keyword.STEER.getMessage() + " " + steering)) {
             updateConnectionStatus(false);
         }
     }
