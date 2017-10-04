@@ -4,6 +4,7 @@
 
 import socket
 import sys
+import datetime
 from thread import *
 
 HOST = ''  # Symbolic name meaning all available interfaces
@@ -27,20 +28,66 @@ print 'Socket now listening'
 
 
 # Function for handling connections. This will be used to create threads
+def man():
+    print "I'm manual!"
+
+
+def acc():
+    print "I'm ACC!"
+
+
+def plt():
+    print "I'm platooning!"
+
+
+def do_drive(param):
+    print "I'm driving"
+
+
+def do_steer(param):
+    print "I'm steering"
+
+
+def run_python(param):
+    print "Run python script " + param[0] + ' with args: '
+    for d in param[1:]:
+        print d
+
+def interpret(data):
+    c = data[0]
+    if c == 'a':
+        acc()
+    elif c =='m':
+        man()
+    elif c == 'p':
+        plt()
+    elif c == 'd':
+        do_drive(data[1:])
+    elif c == 's':
+        do_steer(data[1:])
+    elif c == 'r':
+        run_python(data[1:].split(" "))
+
+
 def clientthread(conn):
+    data_log = []
+
     # Sending message to connected client
-    conn.send('Welcome to the server. Type something and hit enter\n')  # send only takes string
+    conn.send('Connected to MOPED: ' + str(datetime.datetime.now()))  # send only takes string
 
     # infinite loop so that function do not terminate and thread do not end.
     while True:
 
         # Receiving from client
-        data = conn.recv(1024)
-        reply = 'OK...' + data
+        data = str(conn.recv(1024)).replace("\r\n", "")
+
+        data_log.append(data)
+
         if not data:
             break
 
-        conn.sendall(reply)
+        interpret(data)
+
 
     # came out of loop
     conn.close()
