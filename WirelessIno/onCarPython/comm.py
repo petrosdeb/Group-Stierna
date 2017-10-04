@@ -40,12 +40,33 @@ def plt():
     print "I'm platooning!"
 
 
-def doDrive(param):
+def do_drive(param):
     print "I'm driving"
 
 
-def doSteer(param):
+def do_steer(param):
     print "I'm steering"
+
+
+def run_python(param):
+    print "Run python script " + param[0] + ' with args: '
+    for d in param[1:]:
+        print d
+
+def interpret(data):
+    c = data[0]
+    if c == 'a':
+        acc()
+    elif c =='m':
+        man()
+    elif c == 'p':
+        plt()
+    elif c == 'd':
+        do_drive(data[1:])
+    elif c == 's':
+        do_steer(data[1:])
+    elif c == 'r':
+        run_python(data[1:].split(" "))
 
 
 def clientthread(conn):
@@ -65,32 +86,8 @@ def clientthread(conn):
         if not data:
             break
 
-        # print 'r: ' + data + '\n'
-        # Drive
-        if data.startswith('d'):
-            doDrive(int(data[1:]))
-            print "Drive: " + data[1:]
+        interpret(data)
 
-        # Steer
-        elif data.startswith('s'):
-            doSteer(int(data[1:]))
-            print "Steer: " + data[1:]
-
-
-        # Manual
-        elif data.startswith('m'):
-            man()
-            print "Switch to manual mode\n"
-
-        # ACC
-        elif data.startswith('a'):
-            acc()
-            print "Switch to acc mode\n"
-
-        # Platooning
-        elif data.startswith('p'):
-            plt()
-            print "Switch to platooning  mode\n"
 
     # came out of loop
     conn.close()
