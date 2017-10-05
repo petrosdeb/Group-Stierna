@@ -9,15 +9,17 @@ public class StiernaConnector {
     private static String hostName;
     private static int portNumber;
     private static PrintWriter out;
+    private static Socket socket;
 
     public StiernaConnector() {
         updateConnection();
     }
 
-    public static void updateConnection() {
+    public static boolean updateConnection() {
         try {
-            Socket echoSocket = new Socket(hostName, portNumber);
-            out = new PrintWriter(echoSocket.getOutputStream(), true);
+            socket = new Socket(hostName, portNumber);
+            out = new PrintWriter(socket.getOutputStream(), true);
+            return true;
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
@@ -26,6 +28,7 @@ public class StiernaConnector {
                     hostName);
             System.exit(1);
         }
+        return false;
     }
 
     public static void main(String[] args) throws IOException {
@@ -40,8 +43,12 @@ public class StiernaConnector {
         portNumber = Integer.parseInt(args[1]);
     }
 
-    public static void send(String message) {
-        out.println(message);
+    public static boolean send(String message) {
+        if (socket != null) {
+            out.println(message);
+            return true;
+        }
+        return false;
     }
 
     public static void setHostName(String hostName) {
