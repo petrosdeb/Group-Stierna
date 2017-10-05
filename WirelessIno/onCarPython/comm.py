@@ -7,6 +7,8 @@ import sys
 import datetime
 from thread import *
 
+import os
+
 HOST = ''  # Symbolic name meaning all available interfaces
 PORT = 8888  # Arbitrary non-privileged port
 
@@ -48,16 +50,21 @@ def do_steer(param):
     print "I'm steering"
 
 
+# executes param[0] with param[1:] as the arguments
 def run_python(param):
-    print "Run python script " + param[0] + ' with args: '
-    for d in param[1:]:
-        print d
+    cmd = ""
+    for w in param:
+        cmd = cmd + " " + w
 
+    os.system(cmd)
+
+
+# decides what to do with a received message
 def interpret(data):
     c = data[0]
     if c == 'a':
         acc()
-    elif c =='m':
+    elif c == 'm':
         man()
     elif c == 'p':
         plt()
@@ -69,7 +76,8 @@ def interpret(data):
         run_python(data[1:].split(" "))
 
 
-def clientthread(conn):
+# a new client_thread is opened whenever a new connection is established
+def client_thread(conn):
     data_log = []
 
     # Sending message to connected client
@@ -88,7 +96,6 @@ def clientthread(conn):
 
         interpret(data)
 
-
     # came out of loop
     conn.close()
 
@@ -100,6 +107,6 @@ while 1:
     print 'Connected with ' + addr[0] + ':' + str(addr[1])
 
     # start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-    start_new_thread(clientthread, (conn,))
+    start_new_thread(client_thread, (conn,))
 
 s.close()
