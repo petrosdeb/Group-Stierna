@@ -1,24 +1,13 @@
-# Crude attempt at acc implementation, for testing purposes.
 import time
 from driving import drive
 from nav import *
 
-break_distance = {21 : 8,
-				  33 : 14,
-				  43 : 27,
-				  53 : 34,
-				  64 : 46,
-				  75 : 59,
-				  83 : 60,
-				  95 : 92,
-				  106 : 105}
 
 update_time = 0.1
 acceleration_interval = 10
 limit_d = 2
 sigma_v = 2
 sigma_d = 0.1
-
 
 # adjust speed according to distance to preceding vehicle, to match its speed 
 def activate_acc(set_d):
@@ -37,8 +26,6 @@ def activate_acc(set_d):
 			time.sleep(0.00001)
 #			d = g.can_ultra
 		print("Distance, speed: ", d, ",", sp)
-
-
 
 def on():
 	sp = 0
@@ -109,7 +96,11 @@ def get_delta_v(delta_d):
 
 # Calculates accepted break distance according to given speed
 def calculate_break_distance(sp):
-	return 0.06*(sp(**1.6))
+	if sp >= 0:
+		break_distance = 0.06*(sp**1.6)
+	elif sp < 0:
+		break_distance = -0.06*((-sp)**1.6)
+	return break_distance
 
 # Returns True if MOPED is matching speed to preceding vehicle 
 def is_match_speed(sp):
@@ -127,8 +118,12 @@ def adjust_distance(break_distance):
 	acceleration_speed = delta_v/acceleration_interval
 	accelerate(acceleration_speed)
 
+# Calculates the speed of the preceding vehicle
 def calculate_preceding_speed(v):
 	delta_d = get_delta_d()
 	delta_v = get_delta_v(delta_d)
 	preceding_v = v + delta_v
 	return preceding_v
+
+
+
