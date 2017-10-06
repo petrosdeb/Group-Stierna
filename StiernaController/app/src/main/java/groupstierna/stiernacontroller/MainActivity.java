@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.*;
 
 public class MainActivity extends AppCompatActivity {
+    private StiernaConnector stiernaConnector;
 
     private TextView mTextMessage;
     private Keyword mode = Keyword.MANUAL;
@@ -114,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         textViewManualSpeedDisplay = (TextView) findViewById(R.id.textViewManualSpeedDisplay);
         textViewACCSpeedDisplay = (TextView) findViewById(R.id.textViewACCSpeedDisplay);
 
+        stiernaConnector = new StiernaConnector();
+
         setSeekBarDefaultValues();
 
         radioGroup.setOnCheckedChangeListener(radioGroupChangeListener);
@@ -157,16 +160,16 @@ public class MainActivity extends AppCompatActivity {
                 return false;
         }
 
-        if (!StiernaConnector.send(mode.getMessage())) {
+        if (!stiernaConnector.send(mode.getMessage())) {
             updateConnectionStatus(false);
         }
         return true;
     }
 
     private void updateConnection() {
-        StiernaConnector.setHostName(editTextIPNumber.getText().toString());
-        StiernaConnector.setPortNumber(Integer.valueOf(editTextPortNumber.getText().toString()));
-        updateConnectionStatus(StiernaConnector.updateConnection());
+        stiernaConnector.setHostName(editTextIPNumber.getText().toString());
+        stiernaConnector.setPortNumber(Integer.valueOf(editTextPortNumber.getText().toString()));
+        updateConnectionStatus(stiernaConnector.tryConnect());
     }
 
     private void updateConnectionStatus(boolean status) {
@@ -193,14 +196,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             speed = Integer.toString(seekBarACCSpeed.getProgress() - 100);
         }
-        if (!StiernaConnector.send(Keyword.DRIVE.getMessage() + " " + speed)) {
+        if (!stiernaConnector.send(Keyword.DRIVE.getMessage() + " " + speed)) {
             updateConnectionStatus(false);
         }
     }
 
     private void updateSteering() {
         String steering = Integer.toString(seekBarSteering.getProgress() - 100);
-        if (!StiernaConnector.send(Keyword.STEER.getMessage() + " " + steering)) {
+        if (!stiernaConnector.send(Keyword.STEER.getMessage() + " " + steering)) {
             updateConnectionStatus(false);
         }
     }

@@ -2,36 +2,33 @@ package groupstierna.stiernacontroller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class StiernaConnector {
-    private static String hostName;
-    private static int portNumber;
-    private static PrintWriter out;
-    private static Socket socket;
+    private String hostName;
+    private int portNumber;
+    private PrintWriter out;
+    private Socket socket;
 
-    public StiernaConnector() {
-        updateConnection();
-    }
-
-    public static boolean updateConnection() {
-        try {
-            socket = new Socket(hostName, portNumber);
-            out = new PrintWriter(socket.getOutputStream(), true);
-            return true;
-        } catch (UnknownHostException e) {
-            System.err.println("Don't know about host " + hostName);
-            System.exit(1);
-        } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to " +
-                    hostName);
-            System.exit(1);
+    public boolean tryConnect() {
+        if (socket != null) {
+            if (socket.isConnected()) {
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
         }
-        return false;
+        new Thread(new ClientThread()).start();
+        return socket.isConnected();
     }
 
-    public static void main(String[] args) throws IOException {
+    public void main(String[] args) throws IOException {
 
         if (args.length != 2) {
             System.err.println(
@@ -43,7 +40,7 @@ public class StiernaConnector {
         portNumber = Integer.parseInt(args[1]);
     }
 
-    public static boolean send(String message) {
+    public boolean send(String message) {
         if (socket != null) {
             out.println(message);
             return true;
@@ -51,11 +48,33 @@ public class StiernaConnector {
         return false;
     }
 
-    public static void setHostName(String hostName) {
-        StiernaConnector.hostName = hostName;
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
     }
 
-    public static void setPortNumber(int portNumber) {
-        StiernaConnector.portNumber = portNumber;
+    public void setPortNumber(int portNumber) {
+        this.portNumber = portNumber;
+    }
+
+    class ClientThread implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                InetAddress serverAddress = InetAddress.getByName(hostName);
+                socket = new Socket(serverAddress, portNumber);
+                out = new PrintWriter(socket.getOutputStream(), true);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            } catch (SocketException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } catch (Throwable t) {
+                t.printStackTrace();
+            }
+        }
     }
 }

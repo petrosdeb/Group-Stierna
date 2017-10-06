@@ -44,7 +44,7 @@
             android:layout_height="wrap_content" android:id="@+id/textViewSteering"
             android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginBottom="7dp" app:layout_constraintBottom_toTopOf="@+id/seekBarSteering"
-            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
     />
     <SeekBar
             android:layout_width="0dp"
@@ -62,7 +62,7 @@
             app:layout_constraintBottom_toTopOf="@+id/seekBarManualSpeed"
             android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent" android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"/>
+    />
     <SeekBar
             android:layout_width="0dp"
             android:layout_height="wrap_content" android:id="@+id/seekBarManualSpeed"
@@ -77,7 +77,7 @@
             android:layout_height="wrap_content" android:id="@+id/textViewACCSpeed"
             android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginBottom="7dp" app:layout_constraintBottom_toTopOf="@+id/seekBarACCSpeed"
-            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
+            android:layout_marginStart="8dp"/>
     <SeekBar
             android:layout_width="0dp"
             android:layout_height="wrap_content" android:id="@+id/seekBarACCSpeed"
@@ -102,7 +102,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textViewIP" android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"/>
     <EditText
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="9000"
             android:ems="10"
@@ -111,7 +111,7 @@
             app:layout_constraintLeft_toLeftOf="parent" android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent" android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintHorizontal_bias="0.0" android:layout_marginTop="0dp"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintTop_toBottomOf="@+id/textViewPortNumber"
             android:inputType="numberDecimal"/>
     <TextView
@@ -120,7 +120,7 @@
             android:layout_height="wrap_content" android:id="@+id/textViewIP"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp" android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
-    />
+            android:layout_marginStart="8dp"/>
     <TextView
             android:text="Port number"
             android:layout_width="wrap_content"
@@ -128,7 +128,7 @@
             android:layout_marginTop="9dp"
             app:layout_constraintTop_toBottomOf="@+id/textIPNumber" android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
-    />
+            android:layout_marginStart="8dp"/>
     <Button
             android:text="Connect"
             android:layout_width="wrap_content"
@@ -136,35 +136,37 @@
             android:id="@+id/buttonUpdateConnection" android:layout_marginTop="8dp"
             app:layout_constraintTop_toBottomOf="@+id/textPortNumber" android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
-    />
+            android:layout_marginStart="8dp"/>
     <TextView
             android:text="Disconnected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textViewConnectionStatus"
             app:layout_constraintLeft_toRightOf="@+id/buttonUpdateConnection" android:layout_marginLeft="16dp"
-            app:layout_constraintBottom_toBottomOf="@+id/buttonUpdateConnection" android:layout_marginBottom="16dp"/>
+            app:layout_constraintBottom_toBottomOf="@+id/buttonUpdateConnection" android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"/>
     <TextView
             android:text="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textViewManualSpeedDisplay" app:layout_constraintLeft_toRightOf="@+id/textViewManualSpeed"
             android:layout_marginLeft="8dp" app:layout_constraintTop_toTopOf="@+id/textViewManualSpeed"
-            android:layout_marginTop="0dp"/>
+            android:layout_marginStart="8dp"/>
     <TextView
             android:text="50"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textViewACCSpeedDisplay" app:layout_constraintLeft_toRightOf="@+id/textViewACCSpeed"
             android:layout_marginLeft="8dp" app:layout_constraintTop_toTopOf="@+id/textViewACCSpeed"
-            android:layout_marginTop="0dp"/>
+            android:layout_marginStart="8dp"/>
     <TextView
             android:text="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewSteeringDisplay" android:layout_marginTop="0dp"
+            android:id="@+id/textViewSteeringDisplay"
             app:layout_constraintTop_toTopOf="@+id/textViewSteering"
-            app:layout_constraintLeft_toRightOf="@+id/textViewSteering" android:layout_marginLeft="8dp"/>
+            app:layout_constraintLeft_toRightOf="@+id/textViewSteering" android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"/>
 
 
 </android.support.constraint.ConstraintLayout>
