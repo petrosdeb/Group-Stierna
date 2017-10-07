@@ -47,6 +47,40 @@ def on():
 			drive(sp)
 		print("Distance, speed: ", d, ", ", sp)
 
+
+ACCELERATE_STEPS = 10
+
+def acc_on(v_wish):
+	while True:
+		v_actual = g.outspeedcm/2
+		v_wish_delta = v_wish - v_actual
+		d_other = get_d()
+		d_ok = calculate_break_distance(v_actual)
+
+		if not is_ok_distance(d_ok, d_other):
+			adapt_distance(d_other, d_ok, v_actual)
+
+		elif v_wish_delta < 0:
+			dv = v_wish_delta/ACCELERATE_STEPS
+			drive(v_actual + dv)
+
+		elif v_wish_delta > 0:
+			dv = v_wish_delta/ACCELERATE_STEPS
+			if is_ok_distance(v_actual + dv, d_other):
+				drive(v_actual + dv)
+
+		time.sleep(0.1)
+
+def adapt_distance(d1, d2, v):
+	d_delta = d1 - d2
+	v_delta = get_delta_v(d_delta)
+	dv = v_delta/ACCELERATE_STEPS
+	drive(v + dv)
+
+def is_ok_distance(v, d):
+	d_ok = calculate_break_distance(v)
+	return d > d_ok
+
 # Behaviour for Adaptive Cruise Control (ACC). set_sp is desired speed to be maintained.
 def acc(set_sp):
 	max_speed = set_sp
@@ -72,8 +106,10 @@ def acc(set_sp):
 					v = g.outspeedcm/2
 
 
+
+
 # Divide delta_v into even pieces, add these to current speed
-def accelerate(delta_v):
+def accelerate(v_actual, dv):
 	v = g.outspeedcm/2 # Current speed
 	drive(v+delta_v)
 	
