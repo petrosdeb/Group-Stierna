@@ -121,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
         seekBarManualSpeed.setOnSeekBarChangeListener(manualSeekBarChangeListener);
         seekBarACCSpeed.setOnSeekBarChangeListener(accSeekBarChangeListener);
         buttonUpdateConnection.setOnClickListener(updateConnectionOnClickListener);
+
+        textViewConnectionStatus.setText(R.string.disconnected);
+        updateControlUsability();
     }
 
     private void setSeekBarDefaultValues() {
@@ -174,6 +177,35 @@ public class MainActivity extends AppCompatActivity {
         trySend("");
     }
 
+    private void updateControlUsability() {
+        if (textViewConnectionStatus.getText() == "Connected") {
+            switch (mode) {
+                case MANUAL:
+                    seekBarSteering.setEnabled(true);
+                    seekBarManualSpeed.setEnabled(true);
+                    seekBarACCSpeed.setEnabled(true);
+                    break;
+                case ACC:
+                    seekBarSteering.setEnabled(true);
+                    seekBarManualSpeed.setEnabled(false);
+                    seekBarACCSpeed.setEnabled(true);
+                    break;
+                case PLATOONING:
+                    seekBarSteering.setEnabled(false);
+                    seekBarManualSpeed.setEnabled(false);
+                    seekBarACCSpeed.setEnabled(true);
+                    break;
+            }
+        } else {
+            seekBarSteering.setEnabled(false);
+            seekBarManualSpeed.setEnabled(false);
+            seekBarACCSpeed.setEnabled(false);
+        }
+        seekBarSteering.invalidate();
+        seekBarManualSpeed.invalidate();
+        seekBarACCSpeed.invalidate();
+    }
+
     public void updateControl() {
         updateSpeed();
         updateSteering();
@@ -184,10 +216,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateSpeed() {
         String speed = "";
-        if (mode.getMessage().matches(Keyword.MANUAL.getMessage())) {
-            speed = Integer.toString(seekBarManualSpeed.getProgress());
+        if (mode == Keyword.MANUAL) {
+            speed = Integer.toString(seekBarManualSpeed.getProgress() - 100);
         } else {
-            speed = Integer.toString(seekBarACCSpeed.getProgress() - 100);
+            speed = Integer.toString(seekBarACCSpeed.getProgress());
         }
         trySend(Keyword.DRIVE.getMessage() + " " + speed);
     }
@@ -200,5 +232,6 @@ public class MainActivity extends AppCompatActivity {
     private void trySend(String message) {
         StiernaAsyncClient client = new StiernaAsyncClient(hostName, portNumber, message, textViewConnectionStatus);
         client.execute();
+        updateControlUsability();
     }
 }
