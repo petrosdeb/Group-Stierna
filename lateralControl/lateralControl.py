@@ -35,3 +35,10 @@ def adapt_steering(position):
                 steerfactor = 1
         CRL_CAR.steer(steerfactor)
 
+
+def receive_edge_position():
+    pass
+
+def get_steer():
+    pass
+
