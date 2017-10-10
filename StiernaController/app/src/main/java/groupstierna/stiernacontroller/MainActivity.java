@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.*;
 
 public class MainActivity extends AppCompatActivity {
-    private StiernaConnector stiernaConnector;
 
     private TextView mTextMessage;
     private Keyword mode = Keyword.MANUAL;
@@ -25,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewManualSpeedDisplay;
     private TextView textViewACCSpeedDisplay;
 
-    private boolean connectionStatus = false;
+    private String hostName = "192.168.0.0";
+    private int portNumber = 9000;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
             updateConnection();
         }
     };
-
 
     private SeekBar.OnSeekBarChangeListener manualSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
         @Override
@@ -115,8 +114,6 @@ public class MainActivity extends AppCompatActivity {
         textViewManualSpeedDisplay = (TextView) findViewById(R.id.textViewManualSpeedDisplay);
         textViewACCSpeedDisplay = (TextView) findViewById(R.id.textViewACCSpeedDisplay);
 
-        stiernaConnector = new StiernaConnector();
-
         setSeekBarDefaultValues();
 
         radioGroup.setOnCheckedChangeListener(radioGroupChangeListener);
@@ -124,6 +121,9 @@ public class MainActivity extends AppCompatActivity {
         seekBarManualSpeed.setOnSeekBarChangeListener(manualSeekBarChangeListener);
         seekBarACCSpeed.setOnSeekBarChangeListener(accSeekBarChangeListener);
         buttonUpdateConnection.setOnClickListener(updateConnectionOnClickListener);
+
+        textViewConnectionStatus.setText(R.string.disconnected);
+        updateControlUsability();
     }
 
     private void setSeekBarDefaultValues() {
@@ -160,25 +160,50 @@ public class MainActivity extends AppCompatActivity {
                 return false;
         }
 
-        if (!stiernaConnector.send(mode.getMessage())) {
-            updateConnectionStatus(false);
+        trySend(mode.getMessage());
+        if (mode == Keyword.ACC) {
+            updateSpeed();
         }
         return true;
     }
 
     private void updateConnection() {
-        stiernaConnector.setHostName(editTextIPNumber.getText().toString());
-        stiernaConnector.setPortNumber(Integer.valueOf(editTextPortNumber.getText().toString()));
-        updateConnectionStatus(stiernaConnector.tryConnect());
+        hostName = editTextIPNumber.getText().toString();
+        portNumber = Integer.valueOf(editTextPortNumber.getText().toString());
+        updateConnectionStatus();
     }
 
-    private void updateConnectionStatus(boolean status) {
-        connectionStatus = status;
-        if (connectionStatus) {
-            textViewConnectionStatus.setText(R.string.connected);
+    private void updateConnectionStatus() {
+        trySend("");
+    }
+
+    private void updateControlUsability() {
+        if (textViewConnectionStatus.getText() == "Connected") {
+            switch (mode) {
+                case MANUAL:
+                    seekBarSteering.setEnabled(true);
+                    seekBarManualSpeed.setEnabled(true);
+                    seekBarACCSpeed.setEnabled(true);
+                    break;
+                case ACC:
+                    seekBarSteering.setEnabled(true);
+                    seekBarManualSpeed.setEnabled(false);
+                    seekBarACCSpeed.setEnabled(true);
+                    break;
+                case PLATOONING:
+                    seekBarSteering.setEnabled(false);
+                    seekBarManualSpeed.setEnabled(false);
+                    seekBarACCSpeed.setEnabled(true);
+                    break;
+            }
         } else {
-            textViewConnectionStatus.setText(R.string.disconnected);
+            seekBarSteering.setEnabled(false);
+            seekBarManualSpeed.setEnabled(false);
+            seekBarACCSpeed.setEnabled(false);
         }
+        seekBarSteering.invalidate();
+        seekBarManualSpeed.invalidate();
+        seekBarACCSpeed.invalidate();
     }
 
     public void updateControl() {
@@ -191,20 +216,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateSpeed() {
         String speed = "";
-        if (mode.getMessage().matches(Keyword.MANUAL.getMessage())) {
-            speed = Integer.toString(seekBarManualSpeed.getProgress());
+        if (mode == Keyword.MANUAL) {
+            speed = Integer.toString(seekBarManualSpeed.getProgress() - 100);
         } else {
-            speed = Integer.toString(seekBarACCSpeed.getProgress() - 100);
+            speed = Integer.toString(seekBarACCSpeed.getProgress());
         }
-        if (!stiernaConnector.send(Keyword.DRIVE.getMessage() + " " + speed)) {
-            updateConnectionStatus(false);
-        }
+        trySend(Keyword.DRIVE.getMessage() + " " + speed);
     }
 
     private void updateSteering() {
         String steering = Integer.toString(seekBarSteering.getProgress() - 100);
-        if (!stiernaConnector.send(Keyword.STEER.getMessage() + " " + steering)) {
-            updateConnectionStatus(false);
-        }
+        trySend(Keyword.STEER.getMessage() + " " + steering);
+    }
+
+    private void trySend(String message) {
+        StiernaAsyncClient client = new StiernaAsyncClient(hostName, portNumber, message, textViewConnectionStatus);
+        client.execute();
+        updateControlUsability();
     }
 }
