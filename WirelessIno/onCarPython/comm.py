@@ -4,44 +4,56 @@
 
 import socket
 import sys
+import atexit
 import datetime
-from thread import *
+from _thread import start_new_thread
+import nav as n
+from nav import *
+from nav1 import whole4, pause, cont
+from driving import stop, drive, steer
+from constant_speed import constant_speed
+from acc import activate_acc, on, acc, acc_on
 
 import os
 
-from drive import drive
+if len(sys.argv) > 1:
+    HOST = sys.argv[1]
+    PORT = int(sys.argv[2])
 
-HOST = ''  # Symbolic name meaning all available interfaces
-PORT = 90008  # Arbitrary non-privileged port
+    print("Open socket " + HOST + " at port " + str(PORT))
+else:
+    HOST = ''  # Symbolic name meaning all available interfaces
+    PORT = 9000  # Arbitrary non-privileged port
+    print("Open socket with default host at port" + str(PORT))
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print 'Socket created'
+print('Socket created')
 
 # Bind socket to local host and port
 try:
     s.bind((HOST, PORT))
 except socket.error as msg:
-    print 'Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1]
+    print('Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
     sys.exit()
 
-print 'Socket bind complete'
+print('Socket bind complete')
 
 # Start listening on socket
 s.listen(10)
-print 'Socket now listening'
+print('Socket now listening')
 
 
 # Function for handling connections. This will be used to create threads
-def man():
-    print "I'm manual!"
+def do_manual():
+    print('I\'m manual!')
 
 
-def acc():
-    print "I'm ACC!"
+def do_acc():
+    print('I\'m ACC!')
 
-0
-def plt():
-    print "I'm platooning!"
+
+def do_platooning():
+    print('I\'m platooning!')
 
 
 def do_drive(param):
@@ -49,7 +61,7 @@ def do_drive(param):
 
 
 def do_steer(param):
-    print "I'm steering"
+    steer(param)
 
 
 # executes param[0] with param[1:] as the arguments
@@ -63,13 +75,15 @@ def run_python(param):
 
 # decides what to do with a received message
 def interpret(data):
+    if not data:
+        return
     c = data[0]
     if c == 'a':
-        acc()
+        do_acc()
     elif c == 'm':
-        man()
+        do_manual()
     elif c == 'p':
-        plt()
+        do_platooning()
     elif c == 'd':
         do_drive(data[2:])
     elif c == 's':
@@ -83,32 +97,39 @@ def client_thread(conn):
     data_log = []
 
     # Sending message to connected client
-    conn.send('Connected to MOPED: ' + str(datetime.datetime.now()))  # send only takes string
+    # conn.send('Connected to MOPED: ' + str(datetime.datetime.now()))  # send only takes string
 
     # infinite loop so that function do not terminate and thread do not end.
-    while True:
+    # while True:
 
-        # Receiving from client
-        data = str(conn.recv(1024)).replace("\r\n", "")
+    # Receiving from client
+    data = str(conn.recv(1024))
 
-        data_log.append(data)
+    data = data[2:len(data) - 3]
 
-        if not data:
-            break
+    print(data)
 
-        interpret(data)
+    data_log.append(data)
 
+    # if not data:
+    #   break
+
+    interpret(data)
     # came out of loop
-    conn.close()
+    conn.close()  # now keep talking with the client
 
 
-# now keep talking with the client
 while 1:
     # wait to accept a connection - blocking call
     conn, addr = s.accept()
-    print 'Connected with ' + addr[0] + ':' + str(addr[1])
+    print('Connected with ' + addr[0] + ':' + str(addr[1]))
 
     # start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
     start_new_thread(client_thread, (conn,))
 
-s.close()
+
+# @atexit
+# def exit():
+# if not s:
+#     return
+#  s.close()
