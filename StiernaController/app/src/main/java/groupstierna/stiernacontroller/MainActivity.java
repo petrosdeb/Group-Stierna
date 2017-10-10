@@ -10,6 +10,7 @@ import android.widget.*;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final long COOLDOWN = 5;
     private TextView mTextMessage;
     private Keyword mode = Keyword.MANUAL;
     private RadioGroup radioGroup;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     private String hostName = "192.168.0.0";
     private int portNumber = 9000;
+
+    public static boolean connectionStatus = false;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -132,11 +135,11 @@ public class MainActivity extends AppCompatActivity {
         seekBarSteering.setProgress(100);
     }
 
-    private static enum Keyword {
+    private enum Keyword {
         MANUAL("m"), ACC("a"), PLATOONING("p"), DRIVE("d"), STEER("s");
         private final String message;
 
-        private Keyword(String message) {
+        Keyword(String message) {
             this.message = message;
         }
 
@@ -160,8 +163,9 @@ public class MainActivity extends AppCompatActivity {
                 return false;
         }
 
-        trySend(mode.getMessage());
-        if (mode == Keyword.ACC) {
+        if (mode == Keyword.MANUAL) {
+            trySend(mode.getMessage());
+        } else {
             updateSpeed();
         }
         return true;
@@ -178,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateControlUsability() {
-        if (textViewConnectionStatus.getText() == "Connected") {
+        if (connectionStatus) {
             switch (mode) {
                 case MANUAL:
                     seekBarSteering.setEnabled(true);
@@ -208,25 +212,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateControl() {
         updateSpeed();
-        updateSteering();
+        if(mode != Keyword.PLATOONING) {
+            updateSteering();
+        }
         textViewSteeringDisplay.setText(String.valueOf(seekBarSteering.getProgress() - 100));
         textViewManualSpeedDisplay.setText(String.valueOf(seekBarManualSpeed.getProgress() - 100));
         textViewACCSpeedDisplay.setText(String.valueOf(seekBarACCSpeed.getProgress()));
     }
 
     private void updateSpeed() {
-        String speed = "";
         if (mode == Keyword.MANUAL) {
-            speed = Integer.toString(seekBarManualSpeed.getProgress() - 100);
+            trySend(Keyword.DRIVE.getMessage() + " " + Integer.toString(seekBarManualSpeed.getProgress() - 100));
         } else {
-            speed = Integer.toString(seekBarACCSpeed.getProgress());
+            trySend(mode.getMessage() + " " + Integer.toString(seekBarACCSpeed.getProgress()));
         }
-        trySend(Keyword.DRIVE.getMessage() + " " + speed);
     }
 
     private void updateSteering() {
-        String steering = Integer.toString(seekBarSteering.getProgress() - 100);
-        trySend(Keyword.STEER.getMessage() + " " + steering);
+        trySend(Keyword.STEER.getMessage() + " " + Integer.toString(seekBarSteering.getProgress() - 100));
     }
 
     private void trySend(String message) {
