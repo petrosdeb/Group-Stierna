@@ -53,5 +53,6 @@ public class StiernaAsyncClient extends AsyncTask<Void, Void, TextView> {
         } else {
             connectionStatus.setText(R.string.disconnected);
         }
+        MainActivity.connectionStatus = successful;
     }
 }
