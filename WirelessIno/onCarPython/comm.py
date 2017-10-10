@@ -9,8 +9,10 @@ from thread import *
 
 import os
 
+from drive import drive
+
 HOST = ''  # Symbolic name meaning all available interfaces
-PORT = 8888  # Arbitrary non-privileged port
+PORT = 90008  # Arbitrary non-privileged port
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print 'Socket created'
@@ -43,7 +45,7 @@ def plt():
 
 
 def do_drive(param):
-    print "I'm driving"
+    drive(param)
 
 
 def do_steer(param):
@@ -69,9 +71,9 @@ def interpret(data):
     elif c == 'p':
         plt()
     elif c == 'd':
-        do_drive(data[1:])
+        do_drive(data[2:])
     elif c == 's':
-        do_steer(data[1:])
+        do_steer(data[2:])
     elif c == 'r':
         run_python(data[1:].split(" "))
 
