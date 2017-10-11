@@ -4,43 +4,62 @@
 
 import socket
 import sys
-import atexit
-import datetime
 from _thread import start_new_thread
-import nav as n
-from nav import *
-from nav1 import whole4, pause, cont
-from driving import stop, drive, steer
-from constant_speed import constant_speed
-from acc import activate_acc, on, acc, acc_on
-
 import os
 
-if len(sys.argv) > 1:
-    HOST = sys.argv[1]
-    PORT = int(sys.argv[2])
 
-    print("Open socket " + HOST + " at port " + str(PORT))
-else:
-    HOST = ''  # Symbolic name meaning all available interfaces
-    PORT = 9000  # Arbitrary non-privileged port
-    print("Open socket with default host at port" + str(PORT))
+# import nav as n
+# from nav import *
+# from nav1 import whole4, pause, cont
+# from driving import stop, drive, steer
+# from constant_speed import constant_speed
+# from acc import activate_acc, on, acc, acc_on
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-print('Socket created')
+def start_listen(port, host=''):
+    data_log = []
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    print('Socket created (\'' + host + '\'@' + str(port))
+    try:
+        s.bind((host, port))
+    except socket.error as msg:
+        print(msg)
+        sys.exit()
+    print('Socket bind complete')
+    s.listen(10)
+    print('Socket now listening')
+    start_new_thread(listen_thread, (s, data_log))
 
-# Bind socket to local host and port
-try:
-    s.bind((HOST, PORT))
-except socket.error as msg:
-    print('Bind failed. Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
-    sys.exit()
+    return data_log
 
-print('Socket bind complete')
 
-# Start listening on socket
-s.listen(10)
-print('Socket now listening')
+def listen_thread(s, data_log):
+    conn, address = s.accept()
+    print('Connected with ' + address[0] + ':' + str(address[1]))
+
+    # start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
+    start_new_thread(client_thread, (conn, data_log, address))
+
+
+# decides what to do with a received message
+def interpret(data):
+    if not data:
+        return
+    args = data.split(" ")
+    
+    c = args[0]
+
+    if c == 'a':
+        do_acc()
+    elif c == 'm':
+        do_manual()
+    elif c == 'p':
+        do_platooning()
+    elif c == 'd':
+        do_drive(data[2:])
+    elif c == 's':
+        do_steer(data[2:])
+    elif c == 'r':
+        run_python(data[1:].split(" "))
 
 
 # Function for handling connections. This will be used to create threads
@@ -57,11 +76,11 @@ def do_platooning():
 
 
 def do_drive(param):
-    drive(param)
+    print("I'm driving!" + str(param))
 
 
 def do_steer(param):
-    steer(param)
+    print("I'm steering!" + str(param))
 
 
 # executes param[0] with param[1:] as the arguments
@@ -73,63 +92,25 @@ def run_python(param):
     os.system(cmd)
 
 
-# decides what to do with a received message
-def interpret(data):
-    if not data:
-        return
-    c = data[0]
-    if c == 'a':
-        do_acc()
-    elif c == 'm':
-        do_manual()
-    elif c == 'p':
-        do_platooning()
-    elif c == 'd':
-        do_drive(data[2:])
-    elif c == 's':
-        do_steer(data[2:])
-    elif c == 'r':
-        run_python(data[1:].split(" "))
-
-
 # a new client_thread is opened whenever a new connection is established
-def client_thread(conn):
-    data_log = []
-
-    # Sending message to connected client
-    # conn.send('Connected to MOPED: ' + str(datetime.datetime.now()))  # send only takes string
-
+def client_thread(conn, data_log, address):
     # infinite loop so that function do not terminate and thread do not end.
-    # while True:
+    while True:
 
-    # Receiving from client
-    data = str(conn.recv(1024))
+        # Receiving from client
+        raw_data = conn.recv(1024)
 
-    data = data[2:len(data) - 3]
+        if not raw_data:
+            break
 
-    print(data)
+        # Skip the surrounding junk
+        data = raw_data.decode("utf-8").rstrip()
 
-    data_log.append(data)
+        data_log.append(data)
+        # print(data_log)
 
-    # if not data:
-    #   break
+        interpret(data)
 
-    interpret(data)
     # came out of loop
     conn.close()  # now keep talking with the client
-
-
-while 1:
-    # wait to accept a connection - blocking call
-    conn, addr = s.accept()
-    print('Connected with ' + addr[0] + ':' + str(addr[1]))
-
-    # start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-    start_new_thread(client_thread, (conn,))
-
-
-# @atexit
-# def exit():
-# if not s:
-#     return
-#  s.close()
+    print('Connection closed: ' + address[0] + ':' + str(address[1]))
