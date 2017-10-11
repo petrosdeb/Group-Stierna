@@ -8,13 +8,7 @@ from _thread import start_new_thread
 import os
 
 
-# import nav as n
-# from nav import *
-# from nav1 import whole4, pause, cont
-# from driving import stop, drive, steer
-# from constant_speed import constant_speed
-# from acc import activate_acc, on, acc, acc_on
-
+# opens a socket and starts a thread listening for communication on that socket
 def start_listen(port, host=''):
     data_log = []
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -32,64 +26,13 @@ def start_listen(port, host=''):
     return data_log
 
 
+# thread listening for socket communication
 def listen_thread(s, data_log):
     conn, address = s.accept()
     print('Connected with ' + address[0] + ':' + str(address[1]))
 
     # start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
     start_new_thread(client_thread, (conn, data_log, address))
-
-
-# decides what to do with a received message
-def interpret(data):
-    if not data:
-        return
-    args = data.split(" ")
-    
-    c = args[0]
-
-    if c == 'a':
-        do_acc()
-    elif c == 'm':
-        do_manual()
-    elif c == 'p':
-        do_platooning()
-    elif c == 'd':
-        do_drive(data[2:])
-    elif c == 's':
-        do_steer(data[2:])
-    elif c == 'r':
-        run_python(data[1:].split(" "))
-
-
-# Function for handling connections. This will be used to create threads
-def do_manual():
-    print('I\'m manual!')
-
-
-def do_acc():
-    print('I\'m ACC!')
-
-
-def do_platooning():
-    print('I\'m platooning!')
-
-
-def do_drive(param):
-    print("I'm driving!" + str(param))
-
-
-def do_steer(param):
-    print("I'm steering!" + str(param))
-
-
-# executes param[0] with param[1:] as the arguments
-def run_python(param):
-    cmd = ""
-    for w in param:
-        cmd = cmd + " " + w
-
-    os.system(cmd)
 
 
 # a new client_thread is opened whenever a new connection is established
@@ -114,3 +57,43 @@ def client_thread(conn, data_log, address):
     # came out of loop
     conn.close()  # now keep talking with the client
     print('Connection closed: ' + address[0] + ':' + str(address[1]))
+
+
+# decides what to do with a received message
+def interpret(data):
+    if not data:
+        return
+    args = data.split(" ")
+
+    c = args[0]
+
+    if c == 'a':
+        do_acc()
+    elif c == 'm':
+        do_manual()
+    elif c == 'p':
+        do_platooning()
+    elif c == 'd':
+        do_drive(data[2:])
+    elif c == 's':
+        do_steer(data[2:])
+
+
+def do_manual():
+    print('I\'m manual!')
+
+
+def do_acc():
+    print('I\'m ACC!')
+
+
+def do_platooning():
+    print('I\'m platooning!')
+
+
+def do_drive(param):
+    print("I'm driving!" + str(param))
+
+
+def do_steer(param):
+    print("I'm steering!" + str(param))
