@@ -34,11 +34,12 @@ def start_listen(port, host=''):
 
 # thread listening for socket communication
 def listen_thread(s, data_log):
-    conn, address = s.accept()
-    print('Connected with ' + address[0] + ':' + str(address[1]))
+    while True:
+        conn, address = s.accept()
+        # print('Connected with ' + address[0] + ':' + str(address[1]))
 
-    # start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
-    start_new_thread(client_thread, (conn, data_log, address))
+        # start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
+        start_new_thread(client_thread, (conn, data_log, address))
 
 
 # a new client_thread is opened whenever a new connection is established
@@ -62,7 +63,7 @@ def client_thread(conn, data_log, address):
 
     # came out of loop
     conn.close()  # now keep talking with the client
-    print('Connection closed: ' + address[0] + ':' + str(address[1]))
+    #  print('Connection closed: ' + address[0] + ':' + str(address[1]))
 
 
 # decides what to do with a received message
@@ -71,35 +72,41 @@ def interpret(data):
         return
     args = data.split(" ")
 
-    c = args[0]
+    fun = args[0]
+    val = args[1]
 
-    if c == 'a':
-        do_acc()
-    elif c == 'm':
+    if fun == 'a':
+        do_acc(val)
+    elif fun == 'm':
         do_manual()
-    elif c == 'p':
+    elif fun == 'p':
         do_platooning()
-    elif c == 'd':
-        do_drive(data[2:])
-    elif c == 's':
-        do_steer(data[2:])
+    elif fun == 'd':
+        do_drive(val)
+    elif fun == 's':
+        do_steer(val)
 
 
 def do_manual():
-    print('I\'m manual!')
+    # print('I\'m manual!')
+    pass
 
 
-def do_acc():
-    print('I\'m ACC!')
+def do_acc(param):
+    # print('I\'m ACC! ' + param)
+    pass
 
 
 def do_platooning():
-    print('I\'m platooning!')
+    # print('I\'m platooning!')
+    pass
 
 
 def do_drive(param):
-    print("I'm driving!" + str(param))
+    # print("I'm driving!" + str(param))
+    pass
 
 
 def do_steer(param):
-    print("I'm steering!" + str(param))
+    # print("I'm steering!" + str(param))
+    pass
