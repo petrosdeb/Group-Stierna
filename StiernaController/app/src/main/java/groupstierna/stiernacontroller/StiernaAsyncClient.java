@@ -1,6 +1,8 @@
 package groupstierna.stiernacontroller;
 
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.TextView;
 
 import java.io.PrintWriter;
@@ -12,13 +14,13 @@ public class StiernaAsyncClient extends AsyncTask<Void, Void, TextView> {
     private String hostName;
     private int portNumber;
     private String message;
-    private TextView connectionStatus;
+    private Handler connectionStatusHandler;
 
-    public StiernaAsyncClient(String hostName, int portNumber, String message, TextView connectionStatus) {
+    public StiernaAsyncClient(String hostName, int portNumber, String message, Handler connectionStatusHandler) {
         this.hostName = hostName;
         this.portNumber = portNumber;
         this.message = message;
-        this.connectionStatus = connectionStatus;
+        this.connectionStatusHandler = connectionStatusHandler;
     }
 
     @Override
@@ -48,11 +50,13 @@ public class StiernaAsyncClient extends AsyncTask<Void, Void, TextView> {
 
     @Override
     protected void onPostExecute(TextView result) {
+        Message resultMessage = new Message();
         if (successful) {
-            connectionStatus.setText(R.string.connected);
+            resultMessage.arg1 = R.string.connected;
         } else {
-            connectionStatus.setText(R.string.disconnected);
+            resultMessage.arg1 = R.string.disconnected;
         }
-        MainActivity.connectionStatus = successful;
+        resultMessage.obj = successful;
+        connectionStatusHandler.sendMessage(resultMessage);
     }
 }

@@ -1,9 +1,14 @@
 package groupstierna.stiernacontroller;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
@@ -28,7 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private String hostName = "192.168.0.0";
     private int portNumber = 9000;
 
-    public static boolean connectionStatus = false;
+    private Handler connectionStatusHandler;
+
+    private boolean isConnected = false;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -99,33 +106,64 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private class ConnectionStatusTextWatcher implements TextWatcher{
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            updateControlUsability();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Buttons and stuff
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         seekBarSteering = (SeekBar) findViewById(R.id.seekBarSteering);
         seekBarManualSpeed = (SeekBar) findViewById(R.id.seekBarManualSpeed);
         seekBarACCSpeed = (SeekBar) findViewById(R.id.seekBarACCSpeed);
         buttonUpdateConnection = (Button) findViewById(R.id.buttonUpdateConnection);
 
+        // Text stuff
         editTextIPNumber = (EditText) findViewById(R.id.textIPNumber);
         editTextPortNumber = (EditText) findViewById(R.id.textPortNumber);
         textViewConnectionStatus = (TextView) findViewById(R.id.textViewConnectionStatus);
         textViewSteeringDisplay = (TextView) findViewById(R.id.textViewSteeringDisplay);
         textViewManualSpeedDisplay = (TextView) findViewById(R.id.textViewManualSpeedDisplay);
         textViewACCSpeedDisplay = (TextView) findViewById(R.id.textViewACCSpeedDisplay);
+        textViewConnectionStatus.setText(R.string.disconnected);
 
         setSeekBarDefaultValues();
 
+        // Listeners
         radioGroup.setOnCheckedChangeListener(radioGroupChangeListener);
         seekBarSteering.setOnSeekBarChangeListener(manualSeekBarChangeListener);
         seekBarManualSpeed.setOnSeekBarChangeListener(manualSeekBarChangeListener);
         seekBarACCSpeed.setOnSeekBarChangeListener(accSeekBarChangeListener);
         buttonUpdateConnection.setOnClickListener(updateConnectionOnClickListener);
 
-        textViewConnectionStatus.setText(R.string.disconnected);
+        textViewConnectionStatus.addTextChangedListener(new ConnectionStatusTextWatcher());
+
+        connectionStatusHandler = new Handler(Looper.getMainLooper()){
+            @Override
+            public void handleMessage(Message inputMessage){
+                isConnected = (Boolean) inputMessage.obj;
+                textViewConnectionStatus.setText(inputMessage.arg1);
+            }
+        };
+
         updateControlUsability();
     }
 
@@ -182,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateControlUsability() {
-        if (connectionStatus) {
+        if (isConnected) {
             switch (mode) {
                 case MANUAL:
                     seekBarSteering.setEnabled(true);
@@ -233,8 +271,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void trySend(String message) {
-        StiernaAsyncClient client = new StiernaAsyncClient(hostName, portNumber, message, textViewConnectionStatus);
+        StiernaAsyncClient client = new StiernaAsyncClient(hostName, portNumber, message, connectionStatusHandler);
         client.execute();
-        updateControlUsability();
     }
 }
