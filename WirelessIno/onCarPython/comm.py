@@ -10,17 +10,23 @@ import os
 
 # opens a socket and starts a thread listening for communication on that socket
 def start_listen(port, host=''):
-    data_log = []
+    data_log = []  # each thread writes to the same array (which might be a bad idea)
+
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    print('Socket created (\'' + host + '\'@' + str(port))
+
+    print('Socket created: \'' + host + '\'@' + str(port))
+
     try:
         s.bind((host, port))
     except socket.error as msg:
         print(msg)
         sys.exit()
+
     print('Socket bind complete')
     s.listen(10)
+
     print('Socket now listening')
+
     start_new_thread(listen_thread, (s, data_log))
 
     return data_log
