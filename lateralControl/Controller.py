@@ -48,7 +48,7 @@ class Controller:
         steer(lc.get_steer())
     
     def send_to_model(self, data):
-        pass
+        lc.receive_edge_position(data)
     
     '''
     Integrate with longitudional
@@ -59,6 +59,7 @@ class Controller:
             self.capture_image()
             self.send_to_model(self, self.get_edge_position(self, 'latest.jpg'))
             if lc.should_steer():
+                #keep constant speed
                 self.set_steer(self)
             else:
                 #apply acc, but must not stay here. Parallelize computations if possible

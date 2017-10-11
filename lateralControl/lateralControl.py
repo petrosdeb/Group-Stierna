@@ -7,6 +7,10 @@ LATERALERROR = 10
 #Accepted horizontal positioning distance
 
 class LateralControl:
+    
+    current_position = None
+    previous_position = None
+    
 
     def __init__():
         main()
@@ -37,13 +41,16 @@ class LateralControl:
                     steerfactor = 1
             CRL_CAR.steer(steerfactor)
 
-
-    def receive_edge_position():
-        pass
-
+    #new edge position on image
+    def receive_edge_position(data):
+        previous_position = current_position
+        current_position = data
+    
+    #return true if position of vehicle has to be adapted
     def should_steer():
         pass
 
+    #return steering angle to be applied to vehicle
     def get_steer():
         pass
 
