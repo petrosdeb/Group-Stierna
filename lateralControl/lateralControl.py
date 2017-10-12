@@ -27,10 +27,11 @@ class LateralControl:
         camera.resolution = (1024, 768)
         camera.capture('current-image.jpg')
 
+    #Using 512 as the middle of the picture. Since the resolution is 1024. This part need correction due to positive X-axis only.
     def adapt_steering(position):
-        while not position+LATERALERROR> position and position>position-LATERALERROR
-            if position >LATERALERROR
-                steerfactor = position /10
+        while not 512+LATERALERROR> position and position>512-LATERALERROR
+            if position > LATERALERROR+512
+                steerfactor = 512+position /10
                 if steerfactor > 100
                     steerfactor = 100
                 else if steerfactor < -100
