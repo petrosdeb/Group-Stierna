@@ -2,7 +2,7 @@
 from builtins import print
 from lateralControl import lateralNavigation
 
-from lateralControl import lateralControl as lc
+from lateralControl import LateralControl as lateral_control
 
 from driving import steer
 from nav import *
@@ -21,6 +21,7 @@ Can be expanded to handle longitudional control aswell.
 class Controller:
     camera = PiCamera()
     edge = lateralNavigation.image_processor()
+    lc = lateral_control()
     
     def init_camera(self):
         self.camera.resolution = (1024, 768)
@@ -46,9 +47,19 @@ class Controller:
     def set_steer(self):
         steer(lc.get_steer())
     
+    def send_to_model(self, data):
+        lc.receive_edge_position(data)
+    
+    '''
+    Integrate with longitudional
+    '''
     def run(self):
         self.init_camera(self)
         while True:
             self.capture_image()
-            self.send_to_model(self.get_edge_position(self, 'latest.jpg'))
-            self.set_steer(self)
+            self.send_to_model(self, self.get_edge_position(self, 'latest.jpg'))
+            if lc.should_steer():
+                #keep constant speed
+                self.set_steer(self)
+            else:
+                #apply acc, but must not stay here. Parallelize computations if possible
