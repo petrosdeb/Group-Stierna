@@ -16,7 +16,6 @@ data_log = comm.start_listen(PORT)
 old_data = []
 
 while True:
-    sleep(3)
     if (data_log == old_data):
         continue
     old_data = data_log.copy()

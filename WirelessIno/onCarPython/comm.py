@@ -7,8 +7,12 @@ import sys
 from _thread import start_new_thread
 import os
 
-
 # opens a socket and starts a thread listening for communication on that socket
+
+
+from driving import drive, steer
+
+
 def start_listen(port, host=''):
     data_log = []  # each thread writes to the same array (which might be a bad idea)
 
@@ -34,11 +38,14 @@ def start_listen(port, host=''):
 
 # thread listening for socket communication
 def listen_thread(s, data_log):
+    connected_log = []
     while True:
         conn, address = s.accept()
-        # print('Connected with ' + address[0] + ':' + str(address[1]))
 
-        # start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
+        if address not in connected_log:
+            connected_log.append(address)
+            print("New client: " + address[0] + ':' + str(address[1]))
+
         start_new_thread(client_thread, (conn, data_log, address))
 
 
@@ -73,8 +80,16 @@ def interpret(data):
     args = data.split(" ")
 
     fun = args[0]
-    val = args[1]
 
+    val = None
+    if len(args) > 1:
+        val = args[1]
+
+    do_function(fun, val)
+
+
+# executes a function up to one value
+def do_function(fun, val):
     if fun == 'a':
         do_acc(val)
     elif fun == 'm':
@@ -104,9 +119,11 @@ def do_platooning():
 
 def do_drive(param):
     # print("I'm driving!" + str(param))
+    drive(int(param))
     pass
 
 
 def do_steer(param):
     # print("I'm steering!" + str(param))
+    steer(int(param))
     pass
