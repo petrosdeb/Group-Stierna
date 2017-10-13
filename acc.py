@@ -68,7 +68,7 @@ def acc_on(v_wish):
 		d_ok = calculate_break_distance(v_actual)
 
 		if not is_ok_distance(v_actual, d_other):
-			adapt_distance(d_other, d_ok, v_actual) # Only returns 0
+			adapt_distance(d_other, d_ok, v_actual)
 
 		elif v_wish_delta < 0:
 			dv = v_wish_delta
@@ -110,7 +110,7 @@ def adapt_distance(d1, d2, v):
 	v_delta = get_delta_v(d_delta)
 	dv = v_delta/ACCELERATE_STEPS
 	s = v + dv
-	if s < 0:
+	if v <= 0:
 		s = 0
 	drive(s)
 
