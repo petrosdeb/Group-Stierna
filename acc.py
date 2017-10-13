@@ -14,7 +14,8 @@ sleep_time = 0.00001
 
 BREAKING_CONSTANT_METRES = 1.5
 ACCELERATE_STEPS = 5
-MIN_SPEED = 20
+MIN_SPEED = 10
+START_SPEED = 20
 
 delta_v = 0
 
@@ -78,7 +79,7 @@ def acc_on(v_wish):
 			#drive(adapt_velocity(v_actual, dv))
 
 		elif v_actual == 0 and d_other > d_ok and v_wish > 0:
-			drive(MIN_SPEED)
+			drive(START_SPEED)
 
 		elif v_wish_delta > 0:
 			dv = v_wish_delta/ACCELERATE_STEPS
