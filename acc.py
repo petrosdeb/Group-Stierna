@@ -1,4 +1,5 @@
 import time
+import math
 from driving import drive
 from nav import *
 
@@ -8,6 +9,7 @@ acceleration_interval = 10
 limit_d = 2
 sigma_v = 2
 sigma_d = 0.1
+ACC_ON = True
 
 # adjust speed according to distance to preceding vehicle, to match its speed 
 def activate_acc(set_d):
@@ -48,34 +50,67 @@ def on():
 		print("Distance, speed: ", d, ", ", sp)
 
 
-ACCELERATE_STEPS = 10
+ACCELERATE_STEPS = 5
+DECELERATE_STEPS = 2
+
+def switch_acc():
+	ACC_ON = not ACC_ON
 
 def acc_on(v_wish):
-	while True:
+	while ACC_ON:
+		# g.limitspeed=None
+
 		v_actual = g.outspeedcm/2
 		v_wish_delta = v_wish - v_actual
 		d_other = get_d()
 		d_ok = calculate_break_distance(v_actual)
 
-		if not is_ok_distance(d_ok, d_other):
+		if not is_ok_distance(v_actual, d_other):
 			adapt_distance(d_other, d_ok, v_actual)
 
 		elif v_wish_delta < 0:
-			dv = v_wish_delta/ACCELERATE_STEPS
-			drive(v_actual + dv)
+			dv = v_wish_delta
+			break(adapt_velocity(v_actual, dv))
+			#drive(adapt_velocity(v_actual, dv))
+
+		elif v_actual == 0 and d_other > d_ok:
+			drive(10)
 
 		elif v_wish_delta > 0:
 			dv = v_wish_delta/ACCELERATE_STEPS
 			if is_ok_distance(v_actual + dv, d_other):
-				drive(v_actual + dv)
+				# drive(v_actual + dv)
+				drive(adapt_velocity(v_actual, dv))
 
-		time.sleep(0.1)
+		# time.sleep(0.1)
+
+def adapt_velocity(v, dv):
+	if v < 10 and v > 5:
+		return 10
+	elif v < 5:
+		return 0
+	else:
+		s = v + dv
+		if s < 0:
+			s = 0
+		return s
+
+def break(v):
+	drive(-10)
+	#time.sleep(0.001)
+	drive(v)
+
+def stop():
+	drive(0)
 
 def adapt_distance(d1, d2, v):
 	d_delta = d1 - d2
 	v_delta = get_delta_v(d_delta)
 	dv = v_delta/ACCELERATE_STEPS
-	drive(v + dv)
+	s = v + dv
+	if s < 0:
+		s = 0
+	drive(s)
 
 def is_ok_distance(v, d):
 	d_ok = calculate_break_distance(v)
@@ -123,7 +158,7 @@ def get_delta_d():
 # Gets distance to preceding vehicle, if not more than 2
 def get_d():
 	d = min(g.can_ultra, 2)
-	return d
+	return d*100
 
 # Calculates difference in speed of preceding vehicle compared to MOPED
 def get_delta_v(delta_d):
@@ -136,7 +171,7 @@ def calculate_break_distance(sp):
 		break_distance = 0.06*(sp**1.6)
 	elif sp < 0:
 		break_distance = -0.06*((-sp)**1.6)
-	return break_distance
+	return break_distance+100
 
 # Returns True if MOPED is matching speed to preceding vehicle 
 def is_match_speed(sp):
