@@ -12,6 +12,7 @@ sigma_d = 0.1
 acc_state = True
 sleep_time = 0.00001
 
+BREAKING_CONSTANT_METRES = 15
 ACCELERATE_STEPS = 5
 
 delta_v = 0
@@ -72,7 +73,7 @@ def acc_on(v_wish):
 
 		elif v_wish_delta < 0:
 			dv = v_wish_delta
-			breaking(adapt_velocity(v_actual, dv))
+			brake(adapt_velocity(v_actual, dv))
 			#drive(adapt_velocity(v_actual, dv))
 
 		elif v_actual == 0 and d_other > d_ok and v_wish > 0:
@@ -87,17 +88,17 @@ def acc_on(v_wish):
 		# time.sleep(0.1)
 
 def adapt_velocity(v, dv):
-	if v <= 10 and v > 5:
+	s = v + dv
+	if s <= 10 and s > 5:
 		return 10
-	elif v <= 5:
+	elif s <= 5:
 		return 0
 	else:
-		s = v + dv
 		if s < 0:
 			s = 0
 		return s
 
-def breaking(v):
+def brake(v):
 	# drive(-10)
 	# time.sleep(sleep_time)
 	drive(v)
@@ -170,7 +171,7 @@ def calculate_break_distance(sp):
 		break_distance = 0.06*(sp**1.6)
 	elif sp < 0:
 		break_distance = -0.06*((-sp)**1.6)
-	return break_distance+100
+	return break_distance + 100 * BREAKING_CONSTANT_METRES
 
 # Returns True if MOPED is matching speed to preceding vehicle 
 # def is_match_speed(sp):
