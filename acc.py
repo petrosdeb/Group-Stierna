@@ -12,7 +12,7 @@ sigma_d = 0.1
 acc_state = True
 sleep_time = 0.00001
 
-BREAKING_CONSTANT_METRES = 1.5
+BREAKING_CONSTANT_METRES = 2
 ACCELERATE_STEPS = 5
 MIN_SPEED = 10
 START_SPEED = 20
@@ -78,7 +78,7 @@ def acc_on(v_wish):
 			brake(adapt_velocity(v_actual, dv))
 			#drive(adapt_velocity(v_actual, dv))
 
-		elif v_actual == 0 and d_other > d_ok and v_wish > 0:
+		elif v_actual < MIN_SPEED and d_other > d_ok and v_wish > 0:
 			drive(START_SPEED)
 
 		elif v_wish_delta > 0:
