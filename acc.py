@@ -12,8 +12,9 @@ sigma_d = 0.1
 acc_state = True
 sleep_time = 0.00001
 
-BREAKING_CONSTANT_METRES = 15
+BREAKING_CONSTANT_METRES = 1.5
 ACCELERATE_STEPS = 5
+MIN_SPEED = 20
 
 delta_v = 0
 
@@ -77,7 +78,7 @@ def acc_on(v_wish):
 			#drive(adapt_velocity(v_actual, dv))
 
 		elif v_actual == 0 and d_other > d_ok and v_wish > 0:
-			drive(10)
+			drive(MIN_SPEED)
 
 		elif v_wish_delta > 0:
 			dv = v_wish_delta/ACCELERATE_STEPS
@@ -89,9 +90,9 @@ def acc_on(v_wish):
 
 def adapt_velocity(v, dv):
 	s = v + dv
-	if s <= 10 and s > 5:
-		return 10
-	elif s <= 5:
+	if s <= MIN_SPEED and s > MIN_SPEED/2:
+		return MIN_SPEED
+	elif s <= MIN_SPEED/2:
 		return 0
 	else:
 		if s < 0:
