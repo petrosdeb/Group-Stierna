@@ -12,18 +12,27 @@ import time
 from driving import drive
 from nav import *
 
-
+def average_distance(amount):
+    total_distance = 0
+    for x in range(0, amount):
+        time.sleep(0.1)
+        #if we want to put more value to the last readings we can set total_distance = total_distance + (x)*g.can_ultra or something similar
+        total_distance = total_distance + g.can_ultra 
+    return total_distance/amount        
 
 #use_electric = True to use electric brake
 def acc_run_test(use_electric):
     while True:
         
         prev_distance = g.can_ultra
-        sleep(0.25) #Supposedly only gets a value four times per second
+        time.sleep(0.25) #Supposedly only gets a value four times per second
         distance = g.can_ultra
         relative_speed = calc_relative_speed(prev_distance, distance, 0.25)
+        print(relative_speed)
         
-        if relative_speed >= 0 and distance > 1: #increase speed, but for now only set to 19
+        #check is distance has changed over several or one seconds
+        #Calculate relative speed over a longer interval
+        if relative_speed >= 0 or distance > 1: #increase speed, but for now only set to 19
             drive(19)
         else:
             if use_electric:
