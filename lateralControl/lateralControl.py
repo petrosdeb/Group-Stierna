@@ -20,7 +20,7 @@ class LateralControl:
             capture()
             image = misc.imread('current-image.jpg')
             image = image.astype('float32')
-            adapt_steering(LN.find(image))
+            adapt_steering(LN.getXPosition(image))
 
     def capture():
         camera = picamera.PiCamera()
