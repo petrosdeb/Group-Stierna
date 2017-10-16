@@ -16,7 +16,7 @@ class LateralControl:
         main()
 
     def main():
-        while true:
+        while True:
             capture()
             image = misc.imread('current-image.jpg')
             image = image.astype('float32')
