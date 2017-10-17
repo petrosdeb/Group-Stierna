@@ -1,6 +1,5 @@
 import time
 
-
 # update_time = 0.1
 # acceleration_interval = 10
 # limit_d = 2
@@ -53,6 +52,8 @@ import time
 # 			sp = -50
 # 			drive(sp)
 # 		print("Distance, speed: ", d, ", ", sp)
+from math import ceil, floor
+
 
 class Acc():
     LIST_SIZE = 20
@@ -71,7 +72,6 @@ class Acc():
         self.wanted_speed = 0
         self.acc_on()
 
-
     def acc_on(self):
         while True:
             # g.limitspeed=None
@@ -80,6 +80,8 @@ class Acc():
             # v_actual = g.outspeedcm/2 # TODO Exchange for actual measurements for actual speed
             # v_wish_delta = v_wish - v_actual
             delta_d = self.get_d()
+            if delta_d is None:
+                continue
             # print("delta_d = " + '%.2f' % delta_d)
             delta_v = self.get_delta_v_for_forward_object()
             # d_ok = calculate_break_distance(v_actual)
@@ -200,27 +202,41 @@ class Acc():
 
             return self.get_average_of(self.distance_list) * 100
         except ValueError as msg:
-            print(msg)
+            return None
 
     def check_timestamp_validity(self):
         while time.clock() - self.distance_time_list[0] > self.MAX_TIME_PASSED:
             self.distance_list = self.distance_list[1:]
             self.distance_time_list = self.distance_time_list[1:]
 
+    '''
+    Approximates the difference in speed to
+    the target by using constructing a 
+    linear function from two (distance, time) points
+    '''
+
     def get_delta_v_for_forward_object(self):
         size = len(self.distance_list)
+        if not size:
+            return
 
-        d0 = self.get_average_of(self.distance_list[size / 2:])
-        d1 = self.get_average_of(self.distance_list[:size / 2 - 1])
+            # The point p0
+        d0 = self.get_average_of(self.distance_list[ceil(size / 2):])
+        t0 = self.get_average_of(self.distance_time_list[ceil(size / 2):])
 
-        t0 = self.get_average_of(self.distance_time_list[size / 2:])
-        t1 = self.get_average_of(self.distance_time_list[:size / 2 - 1])
+        # The point p1
+        d1 = self.get_average_of(self.distance_list[:floor(size / 2)])
+        t1 = self.get_average_of(self.distance_time_list[:floor(size / 2)])
 
+        # The incline between p0 and p1 is the relative speed
         delta_d = d1 - d0
         delta_t = t1 - t0
         return delta_d * 100 / delta_t
 
     def get_average_of(self, my_list):
+        if not len(my_list):
+            return 0  # see no evil
+
         avg = 0
         for val in my_list:
             avg = avg + val
