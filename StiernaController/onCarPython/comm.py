@@ -13,117 +13,112 @@ import os
 from driving import drive, steer
 
 
-def start_listen(port, host=''):
-    data_log = []  # each thread writes to the same array (which might be a bad idea)
+class Communication():
+    def __init__(self):
+        self.data_log = None
+        self.state = 'm'
+        self.steering = 0
+        self.speed = 0
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def start_listen(self, port, host=''):
+        self.data_log = []  # each thread writes to the same array (which might be a bad idea)
 
-    print('Socket created: \'' + host + '\'@' + str(port))
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    try:
-        s.bind((host, port))
-    except socket.error as msg:
-        print(msg)
-        sys.exit()
+        print('Socket created: \'' + host + '\'@' + str(port))
 
-    print('Socket bind complete')
-    s.listen(10)
+        try:
+            s.bind((host, port))
+        except socket.error as msg:
+            print(msg)
+            sys.exit()
 
-    print('Socket now listening')
+        print('Socket bind complete')
+        s.listen(10)
 
-    start_new_thread(listen_thread, (s, data_log))
+        print('Socket now listening')
 
-    return data_log
+        start_new_thread(self.listen_thread, (s,))
 
+        return self.data_log
 
-# thread listening for socket communication
-def listen_thread(s, data_log):
-    connected_log = []
-    while True:
-        conn, address = s.accept()
+    # thread listening for socket communication
+    def listen_thread(self, s):
+        connected_log = []
+        while True:
+            conn, address = s.accept()
 
-        if address not in connected_log:
-            connected_log.append(address)
-            print("New client: " + address[0] + ':' + str(address[1]))
+            if address not in connected_log:
+                connected_log.append(address)
+                print("New client: " + address[0] + ':' + str(address[1]))
 
-        start_new_thread(client_thread, (conn, data_log, address))
+            start_new_thread(self.client_thread, (conn, address))
 
+    # a new client_thread is opened whenever a new connection is established
+    def client_thread(self, conn, address):
+        # infinite loop so that function do not terminate and thread do not end.
+        while True:
 
-# a new client_thread is opened whenever a new connection is established
-def client_thread(conn, data_log, address):
-    # infinite loop so that function do not terminate and thread do not end.
-    while True:
+            # Receiving from client
+            raw_data = conn.recv(1024)
 
-        # Receiving from client
-        raw_data = conn.recv(1024)
+            if not raw_data:
+                break
 
-        if not raw_data:
-            break
+            # Skip the surrounding junk
+            data = raw_data.decode("utf-8").rstrip()
 
-        # Skip the surrounding junk
-        data = raw_data.decode("utf-8").rstrip()
+            self.data_log.append(data)
+            # print(data_log)
 
-        data_log.append(data)
-        # print(data_log)
+            self.interpret(data)
 
-        interpret(data)
+        # came out of loop
+        conn.close()  # now keep talking with the client
+        #  print('Connection closed: ' + address[0] + ':' + str(address[1]))
 
-    # came out of loop
-    conn.close()  # now keep talking with the client
-    #  print('Connection closed: ' + address[0] + ':' + str(address[1]))
+    # decides what to do with a received message
+    def interpret(self, data):
+        if not data:
+            return
+        args = data.split(" ")
 
+        fun = args[0]
+        self.state = fun
 
-# decides what to do with a received message
-def interpret(data):
-    if not data:
-        return
-    args = data.split(" ")
+        val = None
+        if len(args) > 1:
+            val = args[1]
 
-    fun = args[0]
+        self.do_function(fun, val)
 
-    val = None
-    if len(args) > 1:
-        val = args[1]
+    # executes a function up to one value
+    def do_function(self, fun, val):
+        if fun == 'd':
+            self.speed = val
+            # self.do_drive(val)
+        elif fun == 's':
+            self.steering = val
+            # self.do_steer(val)
 
-    do_function(fun, val)
+    def do_manual(self):
+        # print('I\'m manual!')
+        pass
 
+    def do_acc(self, param):
+        # print('I\'m ACC! ' + param)
+        pass
 
-# executes a function up to one value
-def do_function(fun, val):
-    if fun == 'a':
-        do_acc(val)
-    elif fun == 'm':
-        do_manual()
-    elif fun == 'p':
-        do_platooning()
-    elif fun == 'd':
-        do_drive(val)
-    elif fun == 's':
-        do_steer(val)
+    def do_platooning(self):
+        # print('I\'m platooning!')
+        pass
 
+    def do_drive(self, param):
+        # print("I'm driving!" + str(param))
+        drive(int(param))
+        pass
 
-def do_manual():
-    # print('I\'m manual!')
-    pass
-
-
-def do_acc(param):
-    # print('I\'m ACC! ' + param)
-    pass
-
-
-def do_platooning():
-    # print('I\'m platooning!')
-    pass
-
-
-def do_drive(param):
-    # print("I'm driving!" + str(param))
-    drive(int(param))
-    pass
-
-
-def do_steer(param):
-    # print("I'm steering!" + str(param))
-    steer(int(param))
-    pass
+    def do_steer(self, param):
+        # print("I'm steering!" + str(param))
+        steer(int(param))
+        pass

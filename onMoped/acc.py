@@ -66,15 +66,14 @@ class Acc():
     DECELERATION_RATIO = 1 / 25
     ACCELERATION_RATIO = 1 / 50
 
-    def __init__(self):
+    def __init__(self, core):
         self.distance_list = []
         self.distance_time_list = []
         self.acc_can_interface = None
-        self.listener = None
+        self.core = core
+        self.speed = 0
 
     def acc_on(self, v_wish):
-        self.acc_can_interface = AccCanInterface()
-        self.listener = self.acc_can_interface.get_listener()
         while True:
             # g.limitspeed=None
 
@@ -133,7 +132,10 @@ class Acc():
         # drive(-10)
         # time.sleep(sleep_time)
         output = g.outspeedcm / 2
-        drive(output + delta_v)
+        self.speed = output + delta_v
+
+    def get_speed(self):
+        return self.speed
 
     # def stop():
     # 	drive(0)
