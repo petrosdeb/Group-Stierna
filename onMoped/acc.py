@@ -1,8 +1,5 @@
 import time
 
-from driving import drive
-from nav import *
-
 
 # update_time = 0.1
 # acceleration_interval = 10
@@ -87,7 +84,7 @@ class Acc():
             if delta_d >= self.DISTANCE_CAP:
                 # in case of no obstacles, go for desired speed
                 if self.core.speed != v_wish:
-                    drive(v_wish)
+                    self.speed = v_wish
             elif delta_d < self.SAFE_DISTANCE:  # decrease speed if too close to target
                 self.change_speed(-1 + (delta_d - self.SAFE_DISTANCE) * self.DECELERATION_RATIO)
             elif delta_d > self.WANTED_DISTANCE:  # increase speed if too far away from target

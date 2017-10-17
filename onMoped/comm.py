@@ -5,12 +5,9 @@
 import socket
 import sys
 from _thread import start_new_thread
-import os
+
 
 # opens a socket and starts a thread listening for communication on that socket
-
-
-from driving import drive, steer
 
 
 class Communication():
@@ -100,25 +97,3 @@ class Communication():
         elif fun == 's':
             self.steering = val
             # self.do_steer(val)
-
-    def do_manual(self):
-        # print('I\'m manual!')
-        pass
-
-    def do_acc(self, param):
-        # print('I\'m ACC! ' + param)
-        pass
-
-    def do_platooning(self):
-        # print('I\'m platooning!')
-        pass
-
-    def do_drive(self, param):
-        # print("I'm driving!" + str(param))
-        drive(int(param))
-        pass
-
-    def do_steer(self, param):
-        # print("I'm steering!" + str(param))
-        steer(int(param))
-        pass

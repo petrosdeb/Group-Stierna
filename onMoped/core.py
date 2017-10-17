@@ -1,10 +1,10 @@
 from _thread import start_new_thread
 from enum import Enum
 
-from StiernaController.onCarPython.comm import Communication
 from onMoped.acc import Acc
 from onMoped.can.interfacing.stuff.can_listen import CanListener
 from onMoped.can.interfacing.stuff.can_write import CanWriter
+from onMoped.comm import Communication
 
 
 class State(Enum):
