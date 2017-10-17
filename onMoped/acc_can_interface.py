@@ -1,5 +1,6 @@
-from can.interfacing.stuff.can_listen import CanListener
 from acc import *
+
+from onMoped.can.interfacing.stuff.can_listen import CanListener
 
 
 class AccCanInterface(): # TODO Replace with better class
