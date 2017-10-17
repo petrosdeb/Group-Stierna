@@ -37,6 +37,9 @@ class Core():
         self.communicator = Communication()
         self.communicator.start_listen(8888)
 
+        self.speed = 0
+        self.steering = 0
+
         start_new_thread(self.active_thread, ())
 
     def get_ultra_data(self, n=1):
@@ -47,9 +50,13 @@ class Core():
             self.state = State.char_to_state(self.communicator.state)
 
             if self.state == State.MANUAL:
-                self.writer.send(self.communicator.speed, self.communicator.steering)
+                self.speed = self.communicator.speed
+                self.steering = self.communicator.steering
             if self.state == State.ACC:
-                self.writer.send(self.acc.get_speed(),
-                                 self.communicator.steering)
+                self.speed = self.acc.speed
+                self.steering = self.communicator.steering
             elif self.state == State.PLATOONING:
-                self.writer.send(0, 0)
+                self.speed = 0
+                self.steering = 0
+
+            self.writer.send(self.speed, self.steering)

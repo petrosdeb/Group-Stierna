@@ -1,6 +1,5 @@
 import time
-import math
-from acc_can_interface import AccCanInterface
+
 from driving import drive
 from nav import *
 
@@ -65,11 +64,11 @@ class Acc():
     WANTED_DISTANCE = 150
     DECELERATION_RATIO = 1 / 25
     ACCELERATION_RATIO = 1 / 50
+    MAX_TIME_PASSED = 0.5
 
     def __init__(self, core):
         self.distance_list = []
         self.distance_time_list = []
-        self.acc_can_interface = None
         self.core = core
         self.speed = 0
 
@@ -87,7 +86,7 @@ class Acc():
 
             if delta_d >= self.DISTANCE_CAP:
                 # in case of no obstacles, go for desired speed
-                if g.outspeedcm / 2 != v_wish:  # TODO
+                if self.core.speed != v_wish:
                     drive(v_wish)
             elif delta_d < self.SAFE_DISTANCE:  # decrease speed if too close to target
                 self.change_speed(-1 + (delta_d - self.SAFE_DISTANCE) * self.DECELERATION_RATIO)
@@ -131,11 +130,8 @@ class Acc():
     def change_speed(self, delta_v):
         # drive(-10)
         # time.sleep(sleep_time)
-        output = g.outspeedcm / 2
+        output = self.core.speed
         self.speed = output + delta_v
-
-    def get_speed(self):
-        return self.speed
 
     # def stop():
     # 	drive(0)
@@ -193,32 +189,33 @@ class Acc():
 
     # Gets distance to preceding vehicle, if not more than 2
     def get_d(self):
-        (timestamp, dist) = self.listener.data_fetch(1)
+        (timestamp, dist) = self.core.get_ultra_data()
         if timestamp != self.distance_time_list[-1]:
             self.distance_list.append(min(dist, self.DISTANCE_CAP))
             self.distance_time_list.append(timestamp)
 
             size = len(self.distance_list)
-            if size > self.LIST_SIZE:  # TODO Evaluate if this should be based on timestamp instead
-                self.distance_list = self.distance_list[size - self.LIST_SIZE: size - 1]
-                self.distance_time_list = self.distance_time_list[size - self.LIST_SIZE: size - 1]
+            self.check_timestamp_validity()
 
         return self.get_average_of(self.distance_list) * 100
-        # return min(g.can_ultra, DISTANCE_CAP) * 100
+
+    def check_timestamp_validity(self):
+        while time.clock() - self.distance_time_list[0] > self.MAX_TIME_PASSED:
+            self.distance_list = self.distance_list[1:]
+            self.distance_time_list = self.distance_time_list[1:]
 
     def get_delta_v_for_forward_object(self):
         size = len(self.distance_list)
 
-        d0 = self.get_average_of(self.distance_list[size / 2: size - 1])
-        d1 = self.get_average_of(self.distance_list[0: size / 2 - 1])
+        d0 = self.get_average_of(self.distance_list[size / 2:])
+        d1 = self.get_average_of(self.distance_list[:size / 2 - 1])
 
-        t0 = self.get_average_of(self.distance_time_list[size / 2: size - 1])
-        t1 = self.get_average_of(self.distance_time_list[0: size / 2 - 1])
+        t0 = self.get_average_of(self.distance_time_list[size / 2:])
+        t1 = self.get_average_of(self.distance_time_list[:size / 2 - 1])
 
         delta_d = d1 - d0
         delta_t = t1 - t0
         return delta_d * 100 / delta_t
-        # return min(g.can_ultra, DISTANCE_CAP) * 100 / 0.001
 
     def get_average_of(self, my_list):
         avg = 0
