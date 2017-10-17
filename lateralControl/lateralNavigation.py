@@ -1,50 +1,60 @@
-'''
-Utility class for identifying an edge in an image
-'''
+#### Code for BARCODE detection  ######
+import cv,sys
 
+def __init__():
+    test()
 
-from scipy import misc, ndimage
-import matplotlib.pyplot as plt
-import numpy as np
+def test():
+    getXPosition('test.jpg')
 
+def getXPosition(image):
 
-class image_processor(object):
-    image =  None
-    x_coordinate = None
-    
-    def rgb2rg(self, rgb):
-        return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
-    
-    def find_line(self, filename):
-        
-        self.image = misc.imread(filename)
-        self.image = self.image.astype('float32')
+    imgco = cv.LoadImage(image)
+    img = cv.CreateImage(cv.GetSize(imgco),8,1)
+    imgx = cv.CreateImage(cv.GetSize(img),cv.IPL_DEPTH_16S,1)
+    imgy = cv.CreateImage(cv.GetSize(img),cv.IPL_DEPTH_16S,1)
+    thresh = cv.CreateImage(cv.GetSize(img),8,1)
 
-        sy = ndimage.sobel(self.image, axis=1, mode='constant')
+    ### Convert image to grayscale ###
+    cv.CvtColor(imgco,img,cv.CV_BGR2GRAY)
 
-        height = sy.shape[0]
-        num_checks = 20
-        delta_height = int(height/num_checks)
+    ### Finding horizontal and vertical gradient ###
 
-        curr_height = 0
-        cum_indices = []
-        for h in range(num_checks):
-            line = self.rgb2rg(self, sy[curr_height,:,:])
-            indices = []
-            for i in range(len(line)):
-                slc = line[max(0, i-40):min(len(line)-1, i+40)]
+    cv.Sobel(img,imgx,1,0,3)
+    cv.Abs(imgx,imgx)
 
-                if np.mean(slc[:15]) == 0 and np.mean(slc[-15:]) == 0 and np.mean(np.abs(slc)) < 20 and not np.mean(np.abs(slc)) == 0 :
-                    indices.append(i)
-            if len(indices) > 5:
-                cum_indices.append( np.mean(indices) )
-            curr_height += delta_height
+    cv.Sobel(img,imgy,0,1,3)
+    cv.Abs(imgy,imgy)
 
-        self.x_coordinate = np.mean(cum_indices)
+    cv.Sub(imgx,imgy,imgx)
+    cv.ConvertScale(imgx,img)
 
-        return self.x_coordinate
-    
-    def display_results(self):
-        plt.imshow(self.image)
-        plt.axvline(x = self.x_coordinate)
-        plt.show()
+    ### Low pass filtering ###
+    cv.Smooth(img,img,cv.CV_GAUSSIAN,7,7,0)
+
+    ### Applying Threshold ###
+    cv.Threshold(img,thresh,100,255,cv.CV_THRESH_BINARY)
+
+    cv.Erode(thresh,thresh,None,2)
+    cv.Dilate(thresh,thresh,None,5)
+
+    ### Contour finding with max. area ###
+    storage = cv.CreateMemStorage(0)
+    contour = cv.FindContours(thresh, storage, cv.CV_RETR_CCOMP, cv.CV_CHAIN_APPROX_SIMPLE)
+    area = 0
+    while contour:
+        max_area = cv.ContourArea(contour)
+        if max_area>area:
+            area = max_area
+            bar = list(contour)
+        contour=contour.h_next()
+
+    ### Draw bounding rectangles ###
+    bound_rect = cv.BoundingRect(bar)
+    pt1 = (bound_rect[0], bound_rect[1])
+    pt2 = (bound_rect[0] + bound_rect[2], bound_rect[1] + bound_rect[3])
+    cv.Rectangle(imgco, pt1, pt2, cv.CV_RGB(0,255,255), 2)
+    pt = ((pt2[0]-pt1[0]),(pt2[1]-pt1[1]))
+    middle = ((pt[0]/2+pt1[0]),(pt[1]/2+pt1[1]))
+    print middle[0]
+    return middle[0]
