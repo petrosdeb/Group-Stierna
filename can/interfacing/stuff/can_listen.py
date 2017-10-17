@@ -34,7 +34,7 @@ class CanListener:
         print(self.dist_log[-1])
 
     def data_fetch(self, fetchNumber):
-		return dist_log[-fetchNumber:]
+        return self.dist_log[-fetchNumber:]
         # pass  # TODO return some form of data
 
     def listen_thread(self, varargs=None):
