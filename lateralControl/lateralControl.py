@@ -11,16 +11,13 @@ class LateralControl:
     current_position = None
     previous_position = None
     
-
     def __init__():
         main()
 
     def main():
         while True:
             capture()
-            image = misc.imread('current-image.jpg')
-            image = image.astype('float32')
-            adapt_steering(LN.getXPosition(image))
+            adapt_steering(LN.getXPosition('current-image.jpg'))
 
     def capture():
         camera = picamera.PiCamera()
@@ -37,7 +34,7 @@ class LateralControl:
                 elif steerfactor < -100:
                     steerfactor = -100
                 elif steerfactor < 1 and steerfactor > 0:
-                    steerfactor =    1
+                    steerfactor = 1
                 elif steerfactor > -1 and steerfactor < 0:
                     steerfactor = 1
             CRL_CAR.steer(steerfactor)
