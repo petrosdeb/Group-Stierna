@@ -31,7 +31,7 @@ class CanListener:
     def __dist_push_data__(self, value):
         self.dist_log.append(
             (time.clock(), value))
-        print(self.dist_log[-1])
+        # print(self.dist_log[-1])
 
     def data_fetch(self, fetchNumber):
         return self.dist_log[-fetchNumber:]

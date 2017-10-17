@@ -16,6 +16,7 @@ class Communication():
         self.state = 'm'
         self.steering = 0
         self.speed = 0
+        self.acc_speed = 0
 
     def start_listen(self, port, host=''):
         self.data_log = []  # each thread writes to the same array (which might be a bad idea)
@@ -91,7 +92,9 @@ class Communication():
 
     # executes a function up to one value
     def do_function(self, fun, val):
-        if fun == 'd':
+        if fun == 'a':
+            self.acc_speed = val
+        elif fun == 'd':
             self.speed = val
             # self.do_drive(val)
         elif fun == 's':

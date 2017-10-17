@@ -68,8 +68,11 @@ class Acc():
         self.distance_time_list = []
         self.core = core
         self.speed = 0
+        self.wanted_speed = 0
+        self.acc_on()
 
-    def acc_on(self, v_wish):
+
+    def acc_on(self):
         while True:
             # g.limitspeed=None
 
@@ -77,14 +80,14 @@ class Acc():
             # v_actual = g.outspeedcm/2 # TODO Exchange for actual measurements for actual speed
             # v_wish_delta = v_wish - v_actual
             delta_d = self.get_d()
-            print("delta_d = " + '%.2f' % delta_d)
+            # print("delta_d = " + '%.2f' % delta_d)
             delta_v = self.get_delta_v_for_forward_object()
             # d_ok = calculate_break_distance(v_actual)
 
             if delta_d >= self.DISTANCE_CAP:
                 # in case of no obstacles, go for desired speed
-                if self.core.speed != v_wish:
-                    self.speed = v_wish
+                if self.core.speed != self.wanted_speed:
+                    self.speed = self.wanted_speed
             elif delta_d < self.SAFE_DISTANCE:  # decrease speed if too close to target
                 self.change_speed(-1 + (delta_d - self.SAFE_DISTANCE) * self.DECELERATION_RATIO)
             elif delta_d > self.WANTED_DISTANCE:  # increase speed if too far away from target
@@ -186,15 +189,18 @@ class Acc():
 
     # Gets distance to preceding vehicle, if not more than 2
     def get_d(self):
-        (timestamp, dist) = self.core.get_ultra_data()
-        if timestamp != self.distance_time_list[-1]:
-            self.distance_list.append(min(dist, self.DISTANCE_CAP))
-            self.distance_time_list.append(timestamp)
+        try:
+            (timestamp, dist) = self.core.get_ultra_data()
+            if timestamp != self.distance_time_list[-1]:
+                self.distance_list.append(min(dist, self.DISTANCE_CAP))
+                self.distance_time_list.append(timestamp)
 
-            size = len(self.distance_list)
-            self.check_timestamp_validity()
+                size = len(self.distance_list)
+                self.check_timestamp_validity()
 
-        return self.get_average_of(self.distance_list) * 100
+            return self.get_average_of(self.distance_list) * 100
+        except ValueError as msg:
+            print(msg)
 
     def check_timestamp_validity(self):
         while time.clock() - self.distance_time_list[0] > self.MAX_TIME_PASSED:

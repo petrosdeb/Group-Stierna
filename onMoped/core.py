@@ -23,7 +23,7 @@ def char_to_state(char):
 
 
 class Core():
-    def __init__(self):
+    def __init__(self, port=8888):
         self.listener = CanListener()
         self.listener.socket_open()
 
@@ -32,10 +32,10 @@ class Core():
         self.writer = CanWriter()
         self.writer.start_cont_send()
 
-        self.state = State.ACC
+        self.state = State.MANUAL
 
         self.communicator = Communication()
-        self.communicator.start_listen(8888)
+        self.communicator.start_listen(port)
 
         self.speed = 0
         self.steering = 0
@@ -47,7 +47,8 @@ class Core():
 
     def active_thread(self):
         while True:
-            self.state = State.char_to_state(self.communicator.state)
+            self.state = char_to_state(self.communicator.state)
+            self.acc.wanted_speed = self.communicator.acc_speed
 
             if self.state == State.MANUAL:
                 self.speed = self.communicator.speed
