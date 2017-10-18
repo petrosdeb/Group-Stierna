@@ -1,63 +1,10 @@
 import time
 
-# update_time = 0.1
-# acceleration_interval = 10
-# limit_d = 2
-# sigma_v = 2
-# sigma_d = 0.1
-# sleep_time = 0.00001
-
-# BREAKING_CONSTANT_METRES = 2
-# ACCELERATE_STEPS = 5
-# MIN_SPEED = 10
-# START_SPEED = 20
-
-
-
-
-# adjust speed according to distance to preceding vehicle, to match its speed
-# def activate_acc(set_d):
-# 	g.limitspeed=None
-# 	sp = 0
-# 	while True:
-# 		d = g.can_ultra
-# 		if d > set_d:
-# 			sp = min(sp+1,50)
-# 			drive(sp)
-# 			time.sleep(sleep_time)
-# #			d = g.can_ultra
-# 		if d < set_d:
-# 			sp = max(sp-5,0)
-# 			drive(sp)
-# 			time.sleep(sleep_time)
-# #			d = g.can_ultra
-# 		print("Distance, speed: ", d, ",", sp)
-#
-# def on():
-# 	sp = 0
-# 	drive(sp)
-# 	while True:
-# #		time.sleep(0.2)
-# 		d = g.can_ultra
-# 		if d > 0.5:
-# 			if sp<0:
-# 				drive(0)
-# 				print("Sign changed (- to +)")
-# 			sp = 50
-# 			drive(sp)
-# 		if d < 0.5:
-# 			if sp>0:
-# 				drive(0)
-# 				print("Sign changed (+ to -)")
-# 			sp = -50
-# 			drive(sp)
-# 		print("Distance, speed: ", d, ", ", sp)
 from _thread import start_new_thread
 from math import ceil, floor
 
 
 class Acc():
-    LIST_SIZE = 20
     DISTANCE_CAP = 3
     SAFE_DISTANCE = 100
     WANTED_DISTANCE = 150
@@ -107,7 +54,11 @@ class Acc():
 
     def __change_speed(self, delta_v):
         output = self.core.speed
-        self.speed = output + delta_v
+        # Should prevent MOPED from backing when "braking" at current speed = 0
+        if output == 0 and delta_v < 0:
+            self.speed = 0
+        else:
+            self.speed = output + delta_v
 
     # Gets distance to preceding vehicle, if not more than 2
     def __get_d(self):
