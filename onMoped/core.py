@@ -44,7 +44,6 @@ class Core():
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
                 print(str(c_time) + ': ' + type(self).__name__ + ' is running. . .state = ' + str(self.state))  # usch
-                print(self.get_ultra_data(5))
                 last_time = c_time
 
             self.state = self.communicator.state
