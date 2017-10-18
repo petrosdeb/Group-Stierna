@@ -82,8 +82,11 @@ class Communication():
                 break
 
             # Skip the surrounding junk
-            data = raw_data.decode("utf-8").rstrip()
-
+            try:
+                data = raw_data.decode("utf-8").rstrip()
+            except UnicodeDecodeError as e:
+                print("Client thread closed due to encoding errors")
+                return
             self.data_log.append(data)
             # print(data_log)
 
