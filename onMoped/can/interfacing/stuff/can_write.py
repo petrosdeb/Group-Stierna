@@ -33,6 +33,14 @@ def continuous_send(writer):
     last_time = time.time()
 
     while 1:
+
+        send_steer = writer.out_steer
+        send_speed = writer.out_speed
+
+        # wrap around steer values
+        if send_steer < 0:
+            send_steer = 100 - send_steer
+
         cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (writer.out_speed, writer.out_steer)
         os.system(cmd)
 
