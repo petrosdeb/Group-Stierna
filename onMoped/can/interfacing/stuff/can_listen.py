@@ -46,6 +46,7 @@ class CanListener:
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
                 print(str(c_time) + ': ' + type(self).__name__ + ' is reading CAN')  # usch
+                print(self.data_fetch(10))
                 last_time = c_time
 
             data = self.sock.recv(64)

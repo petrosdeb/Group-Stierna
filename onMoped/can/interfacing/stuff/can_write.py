@@ -25,8 +25,8 @@ class CanWriter:
         if input_steer is None:
             input_steer = self.out_steer
 
-        self.out_speed = input_speed
-        self.out_steer = input_steer
+        self.out_speed = int(input_speed)
+        self.out_steer = int(input_steer)
 
 
 def continuous_send(writer):
@@ -38,5 +38,5 @@ def continuous_send(writer):
 
         c_time = int(time.time())
         if c_time % 5 == 0 and c_time != last_time:
-            print(str(c_time) + ': continuous send active: ' + str(writer.out_speed, writer.out_steer))  # usch
+            print(str(c_time) + ': continuous send active: ' + str((writer.out_speed, writer.out_steer)))  # usch
             last_time = c_time

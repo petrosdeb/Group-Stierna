@@ -54,8 +54,8 @@ class Communication():
                 print(str(c_time) + ': ' + type(self).__name__ + ' is listening to connections')  # usch
                 last_time = c_time
 
-            if address not in connected_log:
-                connected_log.append(address)
+            if address[0] not in connected_log:
+                connected_log.append(address[0])
                 print("New client: " + address[0] + ':' + str(address[1]))
 
             start_new_thread(self.client_thread, (conn, address))
