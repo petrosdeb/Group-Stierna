@@ -4,8 +4,12 @@ import cv,sys
 def __init__():
     test()
 
+#Test-function to test getXPosition(filename)
+# Param: image with a possible barcode
+# Output: Will print the calculated x-value
 def test():
-    getXPosition('test.jpg')
+    x = getXPosition('test.jpg')
+    print(x)
 
 def getXPosition(image):
 
