@@ -1,12 +1,18 @@
+import logging
 from _thread import start_new_thread
 from enum import Enum
 
 import time
+
+import sys
+
 from acc import Acc
 from can.interfacing.stuff.can_listen import CanListener
 from can.interfacing.stuff.can_write import CanWriter
 from comm import Communication
 from state import State
+
+logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
 class Core():
@@ -15,22 +21,22 @@ class Core():
         self.steering = 0
         self.state = State.MANUAL
 
-        print("Starting CanListener")
+        logging.info("Starting CanListener")
         self.listener = CanListener()
         self.listener.socket_open()
 
-        print("Starting acc")
+        logging.info("Starting ACC")
         self.acc = Acc(self)
 
-        print("Starting CanWriter")
+        logging.info("Starting CanWriter")
         self.writer = CanWriter()
         self.writer.start_cont_send()
 
-        print("Starting Communication")
+        logging.info("Starting Communication")
         self.communicator = Communication()
         self.communicator.start_listen(port)
 
-        print("Starting core thread")
+        logging.info("Starting core thread")
         start_new_thread(self.__core_thread, ())
 
     def get_ultra_data(self, n=1):
@@ -43,8 +49,7 @@ class Core():
 
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
-                print(str(c_time) + ': ' + type(self).__name__ + ' is running. . .state = ' + str(self.state))  # usch
-                print("core speed: " + str(self.speed) + ", steer: " + str(self.steering))
+                logging.info("{} : {} is running, state= {}".format(c_time, type(self).__name__, self.state))
                 last_time = c_time
 
             temp_state = self.communicator.state

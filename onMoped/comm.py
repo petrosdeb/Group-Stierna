@@ -1,7 +1,7 @@
 '''
     Simple socket server using threads
 '''
-
+import logging
 import socket
 import sys
 from _thread import start_new_thread
@@ -25,18 +25,18 @@ class Communication():
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        print('Socket created: \'' + host + '\'@' + str(port))
+        logging.info('Socket created: \'' + host + '\'@' + str(port))
 
         try:
             s.bind((host, port))
         except socket.error as msg:
-            print(msg)
+            logging.error(msg)
             sys.exit()
 
-        print('Socket bind complete')
+        logging.info('Socket bind complete')
         s.listen(10)
 
-        print('Socket now listening')
+        logging.info('Socket now listening')
 
         start_new_thread(self.listen_thread, (s,))
 
@@ -53,28 +53,19 @@ class Communication():
 
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
-                print(str(c_time) + ': ' + type(self).__name__ + ' is listening to connections')  # usch
+                logging.info("{}: {} is listening to connections".format(c_time, type(self).__name__))
                 last_time = c_time
 
             if address[0] not in connected_log:
                 connected_log.append(address[0])
-                print("New client: " + address[0] + ':' + str(address[1]))
+                logging.info("New client: {}@{}".format(address[0], address[1]))
 
             start_new_thread(self.client_thread, (conn, address))
 
     # a new client_thread is opened whenever a new connection is established
     def client_thread(self, conn, address):
         # infinite loop so that function do not terminate and thread do not end.
-
-        # last_time = 0
-
-
         while True:
-            # c_time = int(time.time())
-            # if c_time % 5 == 0 and c_time != last_time:
-            #     print(str(c_time) + ': ' + type(self).__name__ + ' is running. Speed = ' + str(self.speed) + ' Steering = ' + str(self.steering) + ' ACC speed = ' + str(self.acc_speed))  # usch
-            #     last_time = c_time
-
             # Receiving from client
             raw_data = conn.recv(1024)
 
@@ -85,16 +76,14 @@ class Communication():
             try:
                 data = raw_data.decode("utf-8").rstrip()
             except UnicodeDecodeError as e:
-                print("Client thread closed due to encoding errors")
+                logging.error("Closed %s@%s due to encoding error", address[0], str(address[1]))
                 return
             self.data_log.append(data)
-            # print(data_log)
 
             self.interpret(data)
 
         # came out of loop
-        conn.close()  # now keep talking with the client
-        #  print('Connection closed: ' + address[0] + ':' + str(address[1]))
+        conn.close()
 
     # decides what to do with a received message
     def interpret(self, data):
