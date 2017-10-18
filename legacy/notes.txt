@@ -1,0 +1,21 @@
+
+
+
+READ:
+
+g.canSocket = initializeCAN(canNetwork)
+
+    s = socket.socket(socket.AF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
+    s.bind((network,))
+    return s
+
+data = g.canSocket.recv(64)
+
+
+WRITE:
+
+
+        cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+            sp, st)
+        #print (sp, g.steering, cmd)
+        os.system(cmd)

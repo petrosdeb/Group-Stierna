@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="groupstierna.stiernacontroller.MainActivity">
+
+    <RadioGroup
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/manualMode" android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent" android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:id="@+id/radioGroup"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
+            android:layout_marginTop="32dp" app:layout_constraintTop_toBottomOf="@+id/buttonUpdateConnection">
+        <RadioButton
+                android:text="Manual control"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/manualMode"
+                tools:layout_conversion_absoluteX="0dp"
+                tools:layout_conversion_absoluteY="563dp" tools:layout_conversion_absoluteWidth="411dp"
+                tools:layout_conversion_absoluteHeight="38dp" tools:layout_editor_absoluteY="563dp"
+                tools:layout_editor_absoluteX="8dp" android:layout_weight="1"/>
+        <RadioButton
+                android:text="Adaptive Cruise Control"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/accMode" tools:layout_conversion_absoluteX="0dp"
+                tools:layout_conversion_absoluteY="507dp" tools:layout_conversion_absoluteWidth="411dp"
+                tools:layout_conversion_absoluteHeight="38dp" tools:layout_editor_absoluteY="507dp"
+                tools:layout_editor_absoluteX="8dp" android:layout_weight="1"/>
+        <RadioButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/platooningMode" android:layout_weight="1"
+                android:text="Platooning"/>
+    </RadioGroup>
+    <TextView
+            android:text="Steering"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/textViewSteering"
+            android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginBottom="7dp" app:layout_constraintBottom_toTopOf="@+id/seekBarSteering"
+            android:layout_marginStart="8dp"
+    />
+    <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:id="@+id/seekBarSteering"
+            android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent" android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/textViewManualSpeed" android:max="200"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
+    <TextView
+            android:text="Speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/textViewManualSpeed"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/seekBarManualSpeed"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent" android:layout_marginStart="8dp"
+    />
+    <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:id="@+id/seekBarManualSpeed"
+            android:layout_marginRight="8dp" app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHorizontal_bias="0.0" android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/textViewACCSpeed" android:max="200"
+            android:layout_marginStart="8dp" android:layout_marginEnd="8dp"/>
+    <TextView
+            android:text="ACC speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/textViewACCSpeed"
+            android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginBottom="7dp" app:layout_constraintBottom_toTopOf="@+id/seekBarACCSpeed"
+            android:layout_marginStart="8dp"/>
+    <SeekBar
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" android:id="@+id/seekBarACCSpeed"
+            tools:layout_conversion_absoluteX="0dp"
+            tools:layout_conversion_absoluteY="545dp" tools:layout_conversion_absoluteWidth="411dp"
+            tools:layout_conversion_absoluteHeight="18dp"
+            android:layout_weight="1" android:layout_marginRight="8dp" app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="0.0"
+            android:layout_marginBottom="33dp" android:max="100" android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+    <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:text="192.168.0.0"
+            android:ems="10"
+            android:id="@+id/textIPNumber" android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent" android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintTop_toBottomOf="@+id/textViewIP" android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+    <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="9000"
+            android:ems="10"
+            android:id="@+id/textPortNumber"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent" android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="parent" android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPortNumber"
+            android:inputType="numberDecimal"/>
+    <TextView
+            android:text="IP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/textViewIP"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp" android:layout_marginLeft="8dp" app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="8dp"/>
+    <TextView
+            android:text="Port number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/textViewPortNumber"
+            android:layout_marginTop="9dp"
+            app:layout_constraintTop_toBottomOf="@+id/textIPNumber" android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="8dp"/>
+    <Button
+            android:text="Connect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonUpdateConnection" android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/textPortNumber" android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="8dp"/>
+    <TextView
+            android:text="Disconnected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewConnectionStatus"
+            app:layout_constraintLeft_toRightOf="@+id/buttonUpdateConnection" android:layout_marginLeft="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/buttonUpdateConnection" android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"/>
+    <TextView
+            android:text="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewManualSpeedDisplay" app:layout_constraintLeft_toRightOf="@+id/textViewManualSpeed"
+            android:layout_marginLeft="8dp" app:layout_constraintTop_toTopOf="@+id/textViewManualSpeed"
+            android:layout_marginStart="8dp"/>
+    <TextView
+            android:text="50"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewACCSpeedDisplay" app:layout_constraintLeft_toRightOf="@+id/textViewACCSpeed"
+            android:layout_marginLeft="8dp" app:layout_constraintTop_toTopOf="@+id/textViewACCSpeed"
+            android:layout_marginStart="8dp"/>
+    <TextView
+            android:text="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewSteeringDisplay"
+            app:layout_constraintTop_toTopOf="@+id/textViewSteering"
+            app:layout_constraintLeft_toRightOf="@+id/textViewSteering" android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"/>
+
+
+</android.support.constraint.ConstraintLayout>
