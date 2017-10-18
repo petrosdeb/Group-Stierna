@@ -6,9 +6,9 @@ from math import ceil, floor
 
 class Acc():
     DISTANCE_CAP = 3
-    SAFE_DISTANCE = 100
-    WANTED_DISTANCE = 150
-    DECELERATION_RATIO = 1 / 25
+    SAFE_DISTANCE = 40
+    WANTED_DISTANCE = 60
+    DECELERATION_RATIO = 1 / 10
     ACCELERATION_RATIO = 1 / 50
     MAX_TIME_PASSED = 0.5
 
@@ -19,6 +19,8 @@ class Acc():
         self.speed = 0
         self.wanted_speed = 0
 
+        self.debug_string = ""
+
         start_new_thread(self.__acc_on, ())
 
     def __acc_on(self):
@@ -28,29 +30,39 @@ class Acc():
 
         while True:
 
+            delta_d = self.__get_d()
+
             c_time = int(time.time())
             if c_time % 3 == 0 and c_time != last_time:
                 print(str(c_time) + ': ' + type(self).__name__ + ' suggest driving at ' + str(self.speed))  # usch
                 last_time = c_time
+                print("Distance: " + str(delta_d))
+                print("Acc debug string: " + self.debug_string)
 
-            delta_d = self.__get_d()
             if delta_d is None:
                 continue
             # print("delta_d = " + '%.2f' % delta_d)
             delta_v = self.__get_delta_v_for_forward_object()
 
             if delta_d >= self.DISTANCE_CAP:
+                self.debug_string = "NO DETECTED TARGET"
                 # in case of no obstacles, go for desired speed
                 if self.core.speed != self.wanted_speed:
                     self.speed = self.wanted_speed
             elif delta_d < self.SAFE_DISTANCE:  # decrease speed if too close to target
+                self.debug_string = "TOO CLOSE TO TARGET"
                 self.__change_speed(-1 + (delta_d - self.SAFE_DISTANCE) * self.DECELERATION_RATIO)
             elif delta_d > self.WANTED_DISTANCE:  # increase speed if too far away from target
+                self.debug_string = "NOT CLOSE ENOUGH TO TARGET"
                 self.__change_speed(1 + (delta_d - self.WANTED_DISTANCE) * self.ACCELERATION_RATIO)
             elif delta_v < 0:  # decrease speed if moving too fast relative to target
+                self.debug_string = "TOO FAST"
                 self.__change_speed(delta_v)
             elif delta_v > 0:  # increase speed if too slow relative to target
+                self.debug_string = "GOTTA GO FAST"
                 self.__change_speed(delta_v)
+            else:
+                self.debug_string = "NOTHING HAPPENS"
 
     def __change_speed(self, delta_v):
         output = self.core.speed
@@ -58,7 +70,13 @@ class Acc():
         if output == 0 and delta_v < 0:
             self.speed = 0
         else:
-            self.speed = output + delta_v
+            if abs(output + delta_v) > 100:
+                if output + delta_v < 0:
+                    self.speed = -100
+                else:
+                    self.speed = 100
+            else:
+                self.speed = output + delta_v
 
     # Gets distance to preceding vehicle, if not more than 2
     def __get_d(self):
