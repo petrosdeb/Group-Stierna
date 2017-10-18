@@ -1,0 +1,31 @@
+import lateralNavigation as LN
+import driving as CRL_CAR
+import picamera
+import time
+
+LATERALERROR = 10
+RESOLUTIONX = 1024
+RESOLUTIONY = 764
+
+#Accepted horizontal positioning distance
+
+def __init__():
+    main()
+
+def main():
+    camera = picamera.PiCamera()
+    camera.resolution = (RESOLUTIONX, RESOLUTIONY)
+    camera.iso = 800
+    time.sleep(2)
+    while True:
+        camera.capture('current-image.jpg')
+        adapt_steering(LN.getXPosition('current-image.jpg')
+        sleep(0.5)
+
+#Should cointain adapt steering algoritm
+def adapt_steering(position):
+    center = RESOLUTIONX/2
+    offset = center - position
+    steerfactor = offset/10
+    CRL_CAR.steer(steerfactor)
+    print (steerfactor)
