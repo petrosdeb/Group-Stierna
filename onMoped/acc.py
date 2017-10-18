@@ -82,60 +82,68 @@ class Acc():
 
     # Gets distance to preceding vehicle, if not more than 2
     def __get_d(self):
-        (timestamp, dist) = self.core.get_ultra_data()[0]
-        if timestamp is None or dist is None:
-            return None  # None values are handled in the loop
+        if len(self.core.get_ultra_data()) == 0:
+            return None
 
-        if timestamp != self.distance_time_list[-1]:
-            self.distance_list.append(min(dist, self.DISTANCE_CAP))
-            self.distance_time_list.append(timestamp)
+        try:
+            (timestamp, dist) = self.core.get_ultra_data()[0]
+        except IndexError:
+            return None # None values are handled in the loop
 
-            size = len(self.distance_list)
-            self.__check_timestamp_validity()
+        if len(self.distance_time_list) is 0:
+            self.__update_lists(timestamp, dist)
+        elif timestamp != self.distance_time_list[-1]:
+            self.__update_lists(timestamp, dist)
 
         return self.__get_average_of(self.distance_list) * 100
 
+    def __update_lists(self, timestamp, dist):
+        self.distance_list.append(min(dist, self.DISTANCE_CAP))
+        self.distance_time_list.append(timestamp)
 
-def __check_timestamp_validity(self):
-    while time.clock() - self.distance_time_list[0] > self.MAX_TIME_PASSED:
-        self.distance_list = self.distance_list[1:]
-        self.distance_time_list = self.distance_time_list[1:]
+        size = len(self.distance_list)
+        self.__check_timestamp_validity()
 
-
-# Approximates the difference in speed to
-# the target by using constructing a
-# linear function from two (distance, time) points
-def __get_delta_v_for_forward_object(self):
-    size = len(self.distance_list)
-    if not size:
-        return
-
-    # values to determine the size of the slices from the data list
-    half_point_ceiled = ceil(size / 2)
-    half_point_floored = floor(size / 2)
-    if half_point_ceiled == half_point_floored:
-        half_point_floored -= 1
-
-    # The point p0
-    d0 = self.__get_average_of(self.distance_list[half_point_ceiled:])
-    t0 = self.__get_average_of(self.distance_time_list[half_point_ceiled:])
-
-    # The point p1
-    d1 = self.__get_average_of(self.distance_list[:half_point_floored])
-    t1 = self.__get_average_of(self.distance_time_list[:half_point_floored])
-
-    # The incline between p0 and p1 is the relative speed
-    delta_d = d1 - d0
-    delta_t = t1 - t0
-    return delta_d * 100 / delta_t
+    def __check_timestamp_validity(self):
+        while time.clock() - self.distance_time_list[0] > self.MAX_TIME_PASSED:
+            self.distance_list = self.distance_list[1:]
+            self.distance_time_list = self.distance_time_list[1:]
 
 
-def __get_average_of(self, my_list):
-    if not len(my_list):
-        return 0  # see no evil
+    # Approximates the difference in speed to
+    # the target by using constructing a
+    # linear function from two (distance, time) points
+    def __get_delta_v_for_forward_object(self):
+        size = len(self.distance_list)
+        if not size:
+            return
 
-    avg = 0
-    for val in my_list:
-        avg = avg + val
-    avg / len(my_list)
-    return avg
+        # values to determine the size of the slices from the data list
+        half_point_ceiled = ceil(size / 2)
+        half_point_floored = floor(size / 2)
+        if half_point_ceiled == half_point_floored:
+            half_point_floored -= 1
+
+        # The point p0
+        d0 = self.__get_average_of(self.distance_list[half_point_ceiled:])
+        t0 = self.__get_average_of(self.distance_time_list[half_point_ceiled:])
+
+        # The point p1
+        d1 = self.__get_average_of(self.distance_list[:half_point_floored])
+        t1 = self.__get_average_of(self.distance_time_list[:half_point_floored])
+
+        # The incline between p0 and p1 is the relative speed
+        delta_d = d1 - d0
+        delta_t = t1 - t0
+        return delta_d * 100 / delta_t
+
+
+    def __get_average_of(self, my_list):
+        if not len(my_list):
+            return 0  # see no evil
+
+        avg = 0
+        for val in my_list:
+            avg = avg + val
+        avg / len(my_list)
+        return avg
