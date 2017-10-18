@@ -10,6 +10,7 @@ CAN_DEVICE = "vcan0"
 # CAN_PATH = "/home/pi/can-utils/cansend"
 # CAN_DEVICE = "can0"
 
+
 class CanWriter:
     def __init__(self):
         self.out_speed = 0
@@ -45,7 +46,10 @@ def continuous_send(writer):
 
         # wrap around steer values
         if send_steer < 0:
-            send_steer = 200 + send_steer
+            send_steer = 201 + send_steer
+
+        if send_speed < 0:
+            send_speed = 201 + send_speed
 
         # 101#A00F
         cmd = CAN_PATH + " " + CAN_DEVICE + " '101#%02x%02x'" % (send_speed, send_steer)
@@ -55,3 +59,5 @@ def continuous_send(writer):
         if c_time % 5 == 0 and c_time != last_time:
             print(str(c_time) + ': continuous send active: ' + str((send_speed, send_steer)))  # usch
             last_time = c_time
+
+        time.sleep(0.01)
