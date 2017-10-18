@@ -3,10 +3,10 @@ import os
 from _thread import start_new_thread
 
 import time
+import math
 
 # CAN_PATH = "/home/maggan/local_can/can-utils/cansend"
 # CAN_DEVICE = "vcan0"
-
 
 CAN_PATH = "/home/pi/can-utils/cansend"
 CAN_DEVICE = "can0"
@@ -42,7 +42,7 @@ def continuous_send(writer):
 
     while 1:
 
-        send_steer = writer.out_steer
+        send_steer = math.max(writer.out_steer,-60)
         send_speed = writer.out_speed
 
         # wrap around steer values
