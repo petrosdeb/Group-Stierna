@@ -11,6 +11,7 @@ class CanListener:
         self.sock = None
 
     def socket_close(self):
+        print("Closing socket")
         self.sock.shutdown()
         self.sock.close()
 
@@ -31,32 +32,38 @@ class CanListener:
     def __dist_push_data__(self, value):
         self.dist_log.append(
             (time.clock(), value))
-        # print(self.dist_log[-1])
 
     def data_fetch(self, fetchNumber):
         return self.dist_log[-fetchNumber:]
-        # pass  # TODO return some form of data
 
     def listen_thread(self, varargs=None):
-        part2 = b""
+        buffer = b""
+
+        last_time = 0
 
         while True:
+
+            c_time = int(time.time())
+            if c_time % 5 == 0 and c_time != last_time:
+                print(str(c_time) + ': ' + type(self).__name__ + ' is reading CAN')  # usch
+                last_time = c_time
+
             data = self.sock.recv(64)
             if (data[0], data[1]) == (108, 4):  # can-bytes start like this (probably)
                 if data[8] == 16:
-                    if len(part2) > 18:
-                        part2x = part2[19:]
-                        part2s = part2x.decode('ascii')
-                        l = part2[18]
-                        part2s2 = part2s[0:l]
+                    if len(buffer) > 18:
+                        buffer_filtered = buffer[19:]
+                        buffer_filtered_decoded = buffer_filtered.decode('ascii')
+                        msg_len = buffer[18]
+                        buffer_msg_slice = buffer_filtered_decoded[0:msg_len]
 
-                        m = re.search("^([0-9]+) ([0-9]+) $", part2s2)
+                        m = re.search("^([0-9]+) ([0-9]+) $", buffer_msg_slice)  # idk what this actually does
                         if m:
                             d = int(m.group(2))
                             self.__dist_push_data__(d)
-                        part2 = b""
+                        buffer = b""
                         time.sleep(0.00001)
-                part2 += data[9:]
+                buffer += data[9:]
 
 
 def data_is_ultra(data):
