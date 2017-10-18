@@ -26,6 +26,6 @@ def main():
 def adapt_steering(position):
     center = RESOLUTIONX/2
     offset = center - position
-
-    CRL_CAR.steer()
-    print (position)
+    steerfactor = offset/10
+    CRL_CAR.steer(steerfactor)
+    print (steerfactor)
