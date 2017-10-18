@@ -60,5 +60,5 @@ def getXPosition(image):
     cv.Rectangle(imgco, pt1, pt2, cv.CV_RGB(0,255,255), 2)
     pt = ((pt2[0]-pt1[0]),(pt2[1]-pt1[1]))
     middle = ((pt[0]/2+pt1[0]),(pt[1]/2+pt1[1]))
-    print middle[0]
+    print (middle[0])
     return middle[0]
