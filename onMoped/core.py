@@ -24,11 +24,10 @@ def char_to_state(char):
 
 
 class Core():
-    self.steering = 0
-
     def __init__(self, port=8888):
-        self.communicator.start_listen(port)
         self.speed = 0
+        self.steering = 0
+        self.state = State.MANUAL
 
         print("Starting CanListener")
         self.listener = CanListener()
@@ -41,10 +40,9 @@ class Core():
         self.writer = CanWriter()
         self.writer.start_cont_send()
 
-        self.state = State.MANUAL
-
         print("Starting Communication")
         self.communicator = Communication()
+        self.communicator.start_listen(port)
 
         print("Starting core thread")
         start_new_thread(self.__core_thread, ())
