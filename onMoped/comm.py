@@ -6,8 +6,8 @@ import socket
 import sys
 from _thread import start_new_thread
 
-
 # opens a socket and starts a thread listening for communication on that socket
+import time
 
 
 class Communication():
@@ -40,11 +40,19 @@ class Communication():
 
         return self.data_log
 
-    # thread listening for socket communication
+        # thread listening for socket communication
+
     def listen_thread(self, s):
         connected_log = []
+        last_time = time.time()
+
         while True:
             conn, address = s.accept()
+
+            c_time = int(time.time())
+            if c_time % 5 == 0 and c_time != last_time:
+                print(str(c_time) + ': ' + type(self).__name__ + ' is listening to connections')  # usch
+                last_time = c_time
 
             if address not in connected_log:
                 connected_log.append(address)
@@ -55,6 +63,8 @@ class Communication():
     # a new client_thread is opened whenever a new connection is established
     def client_thread(self, conn, address):
         # infinite loop so that function do not terminate and thread do not end.
+
+
         while True:
 
             # Receiving from client
