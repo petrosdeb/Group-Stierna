@@ -80,60 +80,62 @@ class Acc():
 
     # Gets distance to preceding vehicle, if not more than 2
     def __get_d(self):
-        try:
-            (timestamp, dist) = self.core.get_ultra_data()
-            if timestamp != self.distance_time_list[-1]:
-                self.distance_list.append(min(dist, self.DISTANCE_CAP))
-                self.distance_time_list.append(timestamp)
+        (timestamp, dist) = self.core.get_ultra_data()[0]
 
-                size = len(self.distance_list)
-                self.__check_timestamp_validity()
+        if timestamp != self.distance_time_list[-1]:
+            self.distance_list.append(min(dist, self.DISTANCE_CAP))
+            self.distance_time_list.append(timestamp)
 
-            return self.__get_average_of(self.distance_list) * 100
-        except ValueError as msg:
-            return None
+            size = len(self.distance_list)
+            self.__check_timestamp_validity()
 
-    def __check_timestamp_validity(self):
-        while time.clock() - self.distance_time_list[0] > self.MAX_TIME_PASSED:
-            self.distance_list = self.distance_list[1:]
-            self.distance_time_list = self.distance_time_list[1:]
+        return self.__get_average_of(self.distance_list) * 100
 
-    '''
-    Approximates the difference in speed to
-    the target by using constructing a 
-    linear function from two (distance, time) points
-    '''
 
-    def __get_delta_v_for_forward_object(self):
-        size = len(self.distance_list)
-        if not size:
-            return
+def __check_timestamp_validity(self):
+    while time.clock() - self.distance_time_list[0] > self.MAX_TIME_PASSED:
+        self.distance_list = self.distance_list[1:]
+        self.distance_time_list = self.distance_time_list[1:]
 
-        # values to determine the size of the slices from the data list
-        half_point_ceiled = ceil(size / 2)
-        half_point_floored = floor(size / 2)
-        if half_point_ceiled == half_point_floored:
-            half_point_floored -= 1
 
-        # The point p0
-        d0 = self.__get_average_of(self.distance_list[half_point_ceiled:])
-        t0 = self.__get_average_of(self.distance_time_list[half_point_ceiled:])
+'''
+Approximates the difference in speed to
+the target by using constructing a 
+linear function from two (distance, time) points
+'''
 
-        # The point p1
-        d1 = self.__get_average_of(self.distance_list[:half_point_floored])
-        t1 = self.__get_average_of(self.distance_time_list[:half_point_floored])
 
-        # The incline between p0 and p1 is the relative speed
-        delta_d = d1 - d0
-        delta_t = t1 - t0
-        return delta_d * 100 / delta_t
+def __get_delta_v_for_forward_object(self):
+    size = len(self.distance_list)
+    if not size:
+        return
 
-    def __get_average_of(self, my_list):
-        if not len(my_list):
-            return 0  # see no evil
+    # values to determine the size of the slices from the data list
+    half_point_ceiled = ceil(size / 2)
+    half_point_floored = floor(size / 2)
+    if half_point_ceiled == half_point_floored:
+        half_point_floored -= 1
 
-        avg = 0
-        for val in my_list:
-            avg = avg + val
-        avg / len(my_list)
-        return avg
+    # The point p0
+    d0 = self.__get_average_of(self.distance_list[half_point_ceiled:])
+    t0 = self.__get_average_of(self.distance_time_list[half_point_ceiled:])
+
+    # The point p1
+    d1 = self.__get_average_of(self.distance_list[:half_point_floored])
+    t1 = self.__get_average_of(self.distance_time_list[:half_point_floored])
+
+    # The incline between p0 and p1 is the relative speed
+    delta_d = d1 - d0
+    delta_t = t1 - t0
+    return delta_d * 100 / delta_t
+
+
+def __get_average_of(self, my_list):
+    if not len(my_list):
+        return 0  # see no evil
+
+    avg = 0
+    for val in my_list:
+        avg = avg + val
+    avg / len(my_list)
+    return avg
