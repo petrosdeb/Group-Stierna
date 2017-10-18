@@ -66,8 +66,14 @@ class Communication():
     def client_thread(self, conn, address):
         # infinite loop so that function do not terminate and thread do not end.
 
+        # last_time = 0
+
 
         while True:
+            # c_time = int(time.time())
+            # if c_time % 5 == 0 and c_time != last_time:
+            #     print(str(c_time) + ': ' + type(self).__name__ + ' is running. Speed = ' + str(self.speed) + ' Steering = ' + str(self.steering) + ' ACC speed = ' + str(self.acc_speed))  # usch
+            #     last_time = c_time
 
             # Receiving from client
             raw_data = conn.recv(1024)
