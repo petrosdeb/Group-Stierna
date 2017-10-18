@@ -6,7 +6,7 @@ from acc import Acc
 from can.interfacing.stuff.can_listen import CanListener
 from can.interfacing.stuff.can_write import CanWriter
 from comm import Communication
-from onMoped.state import char_to_state, State
+from state import State
 
 
 class Core():
@@ -46,7 +46,7 @@ class Core():
                 print(str(c_time) + ': ' + type(self).__name__ + ' is running. . .state = ' + str(self.state))  # usch
                 last_time = c_time
 
-            self.state = char_to_state(self.communicator.state)
+            self.state = self.communicator.state
             self.acc.wanted_speed = self.communicator.acc_speed
 
             if self.state == State.MANUAL:
