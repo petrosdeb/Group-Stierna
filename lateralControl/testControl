@@ -5,7 +5,7 @@ import time
 
 LATERALERROR = 10
 RESOLUTIONX = 1024
-RESOLUTIONT = 764
+RESOLUTIONY = 764
 
 #Accepted horizontal positioning distance
 
