@@ -9,11 +9,13 @@ from _thread import start_new_thread
 # opens a socket and starts a thread listening for communication on that socket
 import time
 
+from state import State, char_to_state
+
 
 class Communication():
     def __init__(self):
         self.data_log = None
-        self.state = 'm'
+        self.state = State.MANUAL
         self.steering = 0
         self.speed = 0
         self.acc_speed = 0
@@ -91,14 +93,14 @@ class Communication():
             return
         args = data.split(" ")
 
-        fun = args[0]
-        self.state = fun
+        function_charcode = args[0]
+        self.state = char_to_state(function_charcode)
 
         val = None
         if len(args) > 1:
             val = args[1]
 
-        self.do_function(fun, val)
+        self.do_function(function_charcode, val)
 
     # executes a function up to one value
     def do_function(self, fun, val):
