@@ -39,7 +39,9 @@ class Acc():
                 print("Distance: " + str(delta_d))
                 print("Acc debug string: " + self.debug_string)
 
+            # If we have no value, set speed to 0 as a safety measure
             if delta_d is None:
+                self.speed = 0
                 continue
             # print("delta_d = " + '%.2f' % delta_d)
             delta_v = self.__get_delta_v_for_forward_object()
@@ -81,6 +83,8 @@ class Acc():
     # Gets distance to preceding vehicle, if not more than 2
     def __get_d(self):
         (timestamp, dist) = self.core.get_ultra_data()[0]
+        if timestamp is None or dist is None:
+            return None  # None values are handled in the loop
 
         if timestamp != self.distance_time_list[-1]:
             self.distance_list.append(min(dist, self.DISTANCE_CAP))
@@ -98,13 +102,9 @@ def __check_timestamp_validity(self):
         self.distance_time_list = self.distance_time_list[1:]
 
 
-'''
-Approximates the difference in speed to
-the target by using constructing a 
-linear function from two (distance, time) points
-'''
-
-
+# Approximates the difference in speed to
+# the target by using constructing a
+# linear function from two (distance, time) points
 def __get_delta_v_for_forward_object(self):
     size = len(self.distance_list)
     if not size:
