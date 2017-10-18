@@ -1,6 +1,7 @@
 from _thread import start_new_thread
 from enum import Enum
 
+import time
 from acc import Acc
 from can.interfacing.stuff.can_listen import CanListener
 from can.interfacing.stuff.can_write import CanWriter
@@ -23,30 +24,44 @@ def char_to_state(char):
 
 
 class Core():
+    self.steering = 0
+
     def __init__(self, port=8888):
+        self.communicator.start_listen(port)
+        self.speed = 0
+
+        print("Starting CanListener")
         self.listener = CanListener()
         self.listener.socket_open()
 
+        print("Starting acc")
         self.acc = Acc(self)
 
+        print("Starting CanWriter")
         self.writer = CanWriter()
         self.writer.start_cont_send()
 
         self.state = State.MANUAL
 
+        print("Starting Communication")
         self.communicator = Communication()
-        self.communicator.start_listen(port)
 
-        self.speed = 0
-        self.steering = 0
-
-        start_new_thread(self.active_thread, ())
+        print("Starting core thread")
+        start_new_thread(self.__core_thread, ())
 
     def get_ultra_data(self, n=1):
         return self.listener.data_fetch(n)
 
-    def active_thread(self):
+    def __core_thread(self):
+
+        last_time = 0
         while True:
+
+            c_time = int(time.time())
+            if c_time % 5 == 0 and c_time != last_time:
+                print(str(c_time) + ': ' + type(self).__name__ + ' is running. . .state = ' + str(self.state))  # usch
+                last_time = c_time
+
             self.state = char_to_state(self.communicator.state)
             self.acc.wanted_speed = self.communicator.acc_speed
 
