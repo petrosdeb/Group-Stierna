@@ -1,3 +1,4 @@
+import logging
 import os
 from _thread import start_new_thread
 
@@ -21,7 +22,7 @@ class CanWriter:
         os.system(cmd)
 
     def start_cont_send(self):
-        print("Starting continuous send")
+        logging.info("Starting continuous send")
         start_new_thread(continuous_send, (self,))  # Shorthand for sending via can-utils
 
     # if no value is given, it sends the last value to hold that value
@@ -57,7 +58,7 @@ def continuous_send(writer):
 
         c_time = int(time.time())
         if c_time % 5 == 0 and c_time != last_time:
-            print(str(c_time) + ': continuous send active: ' + str((send_speed, send_steer)))  # usch
+            logging.info("{} : continuous send active: {}".format(c_time, (send_speed, send_steer)))  # usch
             last_time = c_time
 
         time.sleep(0.01)

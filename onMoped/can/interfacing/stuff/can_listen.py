@@ -1,3 +1,4 @@
+import logging
 import re
 import socket
 import sys
@@ -13,13 +14,13 @@ class CanListener:
         self.sock = None
 
     def socket_close(self):
-        print("Closing socket")
+        logging.info("Closing socket")
         self.sock.shutdown()
         self.sock.close()
 
     # opens a socket (using the can0-interface by default)
     def socket_open(self, network=can_write.CAN_DEVICE):
-        print("Opening " + network + " socket...")
+        logging.info("Opening {} socket . . .".format(network))
         self.sock = socket.socket(socket.AF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
 
         try:
@@ -28,7 +29,7 @@ class CanListener:
             print(msg)
             sys.exit(1)
 
-        print("Starting new socket listening thread...")
+        logging.info("Starting new socket listening thread...")
         start_new_thread(self.listen_thread, (self,))
 
     def __dist_push_data__(self, value):

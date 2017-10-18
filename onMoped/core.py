@@ -12,7 +12,6 @@ from can.interfacing.stuff.can_write import CanWriter
 from comm import Communication
 from state import State
 
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
 class Core():
