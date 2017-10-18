@@ -19,7 +19,7 @@ Our main ACC function
 set_d: minimum distance to the preceding MOPED desired, in meters
 brake: takes input 0, 1, 2 for different brake methods used. Defaults to 0 if faulty input is given
 '''
-def act_acc(set_d, brake):
+def act_acc(set_d, brake, speed):
 	if brake != (0 or 1 or 2):
 		brake = 0
 	print(brake)
@@ -31,7 +31,7 @@ def act_acc(set_d, brake):
 		
 		#as long as distance is less than desired distance, keep speed
 		while d > set_d: 
-			sp = 10
+			sp = speed
 			drive(sp)
 			d = g.can_ultra
 			'''
