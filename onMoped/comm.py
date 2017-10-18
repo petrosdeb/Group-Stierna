@@ -4,10 +4,9 @@
 import logging
 import socket
 import sys
-from _thread import start_new_thread
-
 # opens a socket and starts a thread listening for communication on that socket
 import time
+from _thread import start_new_thread
 
 from state import State, char_to_state
 
@@ -31,7 +30,7 @@ class Communication():
             s.bind((host, port))
         except socket.error as msg:
             logging.error(msg)
-            sys.exit()
+            sys.exit(1)
 
         logging.info('Socket bind complete')
         s.listen(10)

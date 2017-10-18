@@ -42,7 +42,7 @@ def continuous_send(writer):
 
     while 1:
 
-        send_steer = math.max(writer.out_steer,-60)
+        send_steer = max(writer.out_steer,-60)
         send_speed = writer.out_speed
 
         # wrap around steer values

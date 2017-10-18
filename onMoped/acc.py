@@ -5,7 +5,6 @@ from _thread import start_new_thread
 from math import ceil, floor
 
 
-
 class Acc():
     DISTANCE_CAP_METRES = 3
     DISTANCE_CAP_CENTIMETRES = DISTANCE_CAP_METRES * 100
@@ -49,6 +48,7 @@ class Acc():
                     delta_v,
                     self.debug_string
                 ))
+                last_time = c_time
 
             if delta_d is None or delta_v is None:
                 self.speed = 0
@@ -109,7 +109,6 @@ class Acc():
     def __update_lists(self, timestamp, dist):
         self.distance_list.append(min(dist, self.DISTANCE_CAP_CENTIMETRES))
         self.distance_time_list.append(timestamp)
-
 
         self.__check_timestamp_validity()
 
