@@ -1,9 +1,9 @@
+import logging
 import time
 
 from _thread import start_new_thread
 from math import ceil, floor
 
-from pip.utils import logging
 
 
 class Acc():
