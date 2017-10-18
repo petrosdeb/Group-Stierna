@@ -44,9 +44,13 @@ class Core():
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
                 print(str(c_time) + ': ' + type(self).__name__ + ' is running. . .state = ' + str(self.state))  # usch
+                print("core speed: " + str(self.speed) + ", steer: " + str(self.steering))
                 last_time = c_time
 
-            self.state = self.communicator.state
+            temp_state = self.communicator.state
+            if temp_state != None:
+                self.state = temp_state
+
             self.acc.wanted_speed = self.communicator.acc_speed
 
             if self.state == State.MANUAL:

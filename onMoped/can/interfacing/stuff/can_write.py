@@ -3,12 +3,12 @@ from _thread import start_new_thread
 
 import time
 
-# CAN_PATH = "/home/maggan/local_can/can-utils/cansend"
-# CAN_DEVICE = "vcan0"
+CAN_PATH = "/home/maggan/local_can/can-utils/cansend"
+CAN_DEVICE = "vcan0"
 
 
-CAN_PATH = "/home/pi/can-utils/cansend"
-CAN_DEVICE = "can0"
+# CAN_PATH = "/home/pi/can-utils/cansend"
+# CAN_DEVICE = "can0"
 
 class CanWriter:
     def __init__(self):
@@ -41,13 +41,13 @@ def continuous_send(writer):
     while 1:
 
         send_steer = writer.out_steer
-        send_speed = 20  # writer.out_speed
+        send_speed = writer.out_speed
 
         # wrap around steer values
         if send_steer < 0:
             send_steer = 200 + send_steer
 
-        #101#A00F
+        # 101#A00F
         cmd = CAN_PATH + " " + CAN_DEVICE + " '101#%02x%02x'" % (send_speed, send_steer)
         os.system(cmd)
 

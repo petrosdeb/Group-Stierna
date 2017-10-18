@@ -4,6 +4,8 @@ import sys
 import time
 from _thread import start_new_thread
 
+from can.interfacing.stuff import can_write
+
 
 class CanListener:
     def __init__(self):
@@ -16,7 +18,7 @@ class CanListener:
         self.sock.close()
 
     # opens a socket (using the can0-interface by default)
-    def socket_open(self, network='can0'):
+    def socket_open(self, network=can_write.CAN_DEVICE):
         print("Opening " + network + " socket...")
         self.sock = socket.socket(socket.AF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
 
@@ -65,7 +67,3 @@ class CanListener:
                         buffer = b""
                         time.sleep(0.00001)
                 buffer += data[9:]
-
-
-def data_is_ultra(data):
-    return (data[0], data[1]) == (108, 4) and data[8] == 16
