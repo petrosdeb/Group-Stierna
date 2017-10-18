@@ -41,10 +41,10 @@ def continuous_send(writer):
         if send_steer < 0:
             send_steer = 100 - send_steer
 
-        cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (writer.out_speed, writer.out_steer)
+        cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (send_speed, send_steer)
         os.system(cmd)
 
         c_time = int(time.time())
         if c_time % 5 == 0 and c_time != last_time:
-            print(str(c_time) + ': continuous send active: ' + str((writer.out_speed, writer.out_steer)))  # usch
+            print(str(c_time) + ': continuous send active: ' + str((send_speed, send_steer)))  # usch
             last_time = c_time
