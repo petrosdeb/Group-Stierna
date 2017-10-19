@@ -3,6 +3,7 @@ import time
 
 from _thread import start_new_thread
 from math import ceil, floor
+#from acc_test import act_acc
 
 
 class Acc():
@@ -18,25 +19,37 @@ class Acc():
         self.distance_list = []
         self.distance_time_list = []
         self.core = core
-        self.speed = 0
+        drive(0)
         self.wanted_speed = 0
 
         self.debug_string = ""
 
         start_new_thread(self.__acc_on, ())
 
-    def __acc_on(self):
+        
+
+    def __acc_on(self): #set_d, brake
+        
         logging.info("Started acc_on")
 
         last_time = time.time()
-
+        set_d = 1
+        brake = 0
+        
+        if brake != 0 or brake != 1 or brake != 2:
+                brake = 0
+                print(brake)
+        
+        stopped = True
         while True:
-
+            
             delta_d = self.__get_d()
 
             # If we have no value, set speed to 0 as a safety measure
 
-            delta_v = self.__get_delta_v_for_forward_object()
+            #delta_v = self.__get_delta_v_for_forward_object()
+            
+            
 
             c_time = int(time.time())
             if c_time % 3 == 0 and c_time != last_time:
@@ -51,43 +64,104 @@ class Acc():
                 last_time = c_time
 
             if delta_d is None or delta_v is None:
-                self.speed = 0
+                drive(0)
                 continue
 
-            if delta_d >= self.DISTANCE_CAP_CENTIMETRES:
-                self.debug_string = "NO DETECTED TARGET"
-                # in case of no obstacles, go for desired speed
-                if self.core.speed != self.wanted_speed:
-                    self.speed = self.wanted_speed
-            elif delta_d < self.SAFE_DISTANCE:  # decrease speed if too close to target
-                self.debug_string = "TOO CLOSE TO TARGET"
-                self.__change_speed(-1 + (delta_d - self.SAFE_DISTANCE) * self.DECELERATION_FACTOR)
-            elif delta_d > self.WANTED_DISTANCE:  # increase speed if too far away from target
-                self.debug_string = "NOT CLOSE ENOUGH TO TARGET"
-                self.__change_speed(1 + (delta_d - self.WANTED_DISTANCE) * self.ACCELERATION_FACTOR)
-            elif delta_v < 0:  # decrease speed if moving too fast relative to target
-                self.debug_string = "TOO FAST"
-                self.__change_speed(delta_v)
-            elif delta_v > 0:  # increase speed if too slow relative to target
-                self.debug_string = "GOTTA GO FAST"
-                self.__change_speed(delta_v)
-            else:
-                self.debug_string = "NOTHING HAPPENS"
+            #set true if the car has stopped
+            
+            
+            #delta_d = self.__get_d()
+            print(delta_d)
+            
+            #as long as distance is less than desired distance, keep speed
+            if delta_d > set_d: 
+                sp = self.wanted_speed
+                drive(sp)
+                delta_d = self.__get_d()
+                '''
+                With the new distance, yet again check if the distance is larger than desired distance. 
+                Set stopped to False as the car is ready to drive
+                '''
+                if delta_d > set_d:
+                    stopped = False
+                    #time.sleep(0.1)
+                print(delta_d)
+            '''
+            if distance is smaller than desired distance, brake.
+            we have several different brake functions, depending on whether aggressive braking is needed or not
+            for aggressive braking electric brake is used, for less aggressive brake use decremental brake.
+            distance based brake aims to keep the set_d to the car in front
+            Electric brake runs the risk of stalling and reversing. Therefore using it only allows for braking
+            when distance is larger than 10 cm.
+            '''
+            if 0 < delta_d < set_d:
+                #delta_d = self.__get_d()
+                
+                if brake == 0:
+                    if not stopped:
+                        if delta_d < set_d/2: #added
+                            electric_braking(self)
+                        else: #added
+                            mod_electric_braking() #added
+                        
+                        print(delta_d)
+                        if delta_d < 10: #Changed from 0.05 to 0.1
+                            stopped = True
+                            drive(0)
+                elif brake == 1:
+                    distance_based_brake(self, set_d)
+                elif brake == 2:
+                    decremental_brake(self, sp)
+                else:
+                    sp = 0
+                    drive(0)
+                    
+                    print(delta_d)
 
+    def electric_braking(self):
+        for x in range(0, 10):
+            #Decrease this to improve braking. Might lead to stalling
+            drive(-100)
+    '''
+    Slower electric brake. To avoid stopping completely
+    '''
+    def mod_electric_braking(self):
+        for x in range(0, 10):
+            #Decrease this to improve braking. Might lead to stalling
+            drive(-20)
+    
+    def decremental_brake(self, sp):
+        for x in range(0,sp):
+            drive(sp - (x + 1))
+
+    def distance_based_brake(self, set_d):
+        delta_d = self.__get_d()
+        if delta_d < set_d:
+            sp = self.core.speed
+            while sp > 0:
+                sp -= 5
+                if sp < 0:
+                    sp = 0
+                drive(sp)
+                
+    def drive(self, sp):
+        self.speed = sp
+    
+    
     def __change_speed(self, delta_v):
         previous_output = float(self.core.speed)
         delta_v = float(delta_v)
         # Should prevent MOPED from backing when "braking" at current speed = 0
         if previous_output == 0 and delta_v < 0:
-            self.speed = 0
+            drive(0)
         else:
             if abs(previous_output + delta_v) > 100:
                 if previous_output + delta_v < 0:
-                    self.speed = -100
+                    drive(-100)
                 else:
-                    self.speed = 100
+                    drive(100)
             else:
-                self.speed = previous_output + delta_v
+                drive(previous_output + delta_v)
 
     # Gets distance to preceding vehicle, if not more than 2
     def __get_d(self):

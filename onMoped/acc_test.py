@@ -40,6 +40,7 @@ def act_acc(set_d, brake, speed):
 			'''
 			if d > set_d:
 				stopped = False
+				#time.sleep(0.1)
 			print(d)
 		'''
 		if distance is smaller than desired distance, brake.
@@ -56,7 +57,7 @@ def act_acc(set_d, brake, speed):
 				if not stopped:
 					electric_braking()
 					print(d)
-					if d < 0.1:
+					if d < 0.05:
 						stopped = True
 						drive(0)
 			elif brake == 1:
