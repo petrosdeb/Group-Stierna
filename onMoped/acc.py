@@ -97,7 +97,6 @@ class Acc:
                             self.electric_braking()
                         else:  # added
                             self.mod_electric_braking()  # added
-
                         print(delta_d)
                         if delta_d < 10:  # Changed from 0.05 to 0.1
                             stopped = True
