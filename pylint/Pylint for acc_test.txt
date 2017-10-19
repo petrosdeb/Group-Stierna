@@ -1,0 +1,19 @@
+************* Module acc_test
+E:  6, 0: Unable to import 'driving' (import-error)
+E: 14,19: Undefined variable 'g' (undefined-variable)
+E: 37,19: Undefined variable 'g' (undefined-variable)
+E: 44,23: Undefined variable 'g' (undefined-variable)
+E: 62,23: Undefined variable 'g' (undefined-variable)
+E:103,15: Undefined variable 'g' (undefined-variable)
+E:105,16: Undefined variable 'g' (undefined-variable)
+E:118,15: Undefined variable 'g' (undefined-variable)
+E:119,20: Undefined variable 'g' (undefined-variable)
+E:123,28: Undefined variable 'g' (undefined-variable)
+E:124,23: Undefined variable 'g' (undefined-variable)
+E:128,23: Undefined variable 'g' (undefined-variable)
+E:129,28: Undefined variable 'g' (undefined-variable)
+E:132,28: Undefined variable 'g' (undefined-variable)
+E:133,23: Undefined variable 'g' (undefined-variable)
+
+------------------------------------------------------------------
+Your code has been rated at 0.74/10 (previous run: 0.12/10, +0.62)
