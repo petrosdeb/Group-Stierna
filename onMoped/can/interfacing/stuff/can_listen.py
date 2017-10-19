@@ -62,8 +62,8 @@ class CanListener:
                         m = re.search("^([0-9]+) ([0-9]+) $", buffer_msg_slice)  # idk what this actually does
                         if m:
                             d = int(m.group(2))
-                            if d != 3400:
-                                self.__dist_push_data__(d)
+                            # if d != 3400:
+                            self.__dist_push_data__(d)
                         buffer = b""
                         time.sleep(0.00001)
                 buffer += data[9:]
