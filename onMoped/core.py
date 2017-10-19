@@ -1,10 +1,6 @@
 import logging
-from _thread import start_new_thread
-from enum import Enum
-
 import time
-
-import sys
+from _thread import start_new_thread
 
 from acc import Acc
 from can.interfacing.stuff.can_listen import CanListener
@@ -48,6 +44,10 @@ class Core():
 
         last_time = 0
         while True:
+            if not self.writer.hasSent:
+                continue
+
+            self.writer.hasSent = True
 
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:

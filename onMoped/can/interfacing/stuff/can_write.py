@@ -1,12 +1,12 @@
 import logging
 import os
-from _thread import start_new_thread
-
 import time
-import math
+from _thread import start_new_thread
 
 
 class CanWriter:
+    hasSent = True
+
     def __init__(self, can_device, can_path):
         self.out_speed = 0
         self.out_steer = 0
@@ -50,6 +50,7 @@ class CanWriter:
             # 101#A00F
             cmd = self.can_path + " " + self.can_device + " '101#%02x%02x'" % (send_speed, send_steer)
             os.system(cmd)
+            self.hasSent = True
 
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
