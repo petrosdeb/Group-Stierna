@@ -12,7 +12,7 @@ class Acc():
     WANTED_DISTANCE = 60
     DECELERATION_FACTOR = -1.5
     ACCELERATION_FACTOR = 0.5
-    MAX_TIME_PASSED = 1
+    DIST_DATA_LIFETIME = 1
 
     def __init__(self, core):
         self.distance_list = []
@@ -113,7 +113,7 @@ class Acc():
         self.__check_timestamp_validity()
 
     def __check_timestamp_validity(self):
-        while time.clock() - self.distance_time_list[0] > self.MAX_TIME_PASSED:
+        while time.clock() - self.distance_time_list[0] > self.DIST_DATA_LIFETIME:
             self.distance_list = self.distance_list[1:]
             self.distance_time_list = self.distance_time_list[1:]
 
