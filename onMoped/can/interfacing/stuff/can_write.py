@@ -2,15 +2,11 @@ import logging
 import os
 from _thread import start_new_thread
 
+from run import can_device as CAN_DEVICE
+from run import can_utils_path as CAN_PATH
+
 import time
 import math
-
-# CAN_PATH = "/home/maggan/local_can/can-utils/cansend"
-# CAN_DEVICE = "vcan0"
-
-CAN_PATH = "/home/pi/can-utils/cansend"
-CAN_DEVICE = "can0"
-
 
 class CanWriter:
     def __init__(self):

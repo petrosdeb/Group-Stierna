@@ -12,10 +12,11 @@ from can.interfacing.stuff.can_write import CanWriter
 from comm import Communication
 from state import State
 
+from run import port as PORT
 
 
 class Core():
-    def __init__(self, port=8888):
+    def __init__(self, port=PORT):
         self.speed = 0
         self.steering = 0
         self.state = State.MANUAL
