@@ -104,7 +104,7 @@
     <EditText
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="9000"
+            android:text="8888"
             android:ems="10"
             android:id="@+id/textPortNumber"
             android:layout_marginLeft="8dp"
