@@ -3,10 +3,12 @@ import time
 
 from _thread import start_new_thread
 from math import ceil, floor
-#from acc_test import act_acc
 
 
-class Acc():
+# from acc_test import act_acc
+
+
+class Acc:
     DISTANCE_CAP_METRES = 3
     DISTANCE_CAP_CENTIMETRES = DISTANCE_CAP_METRES * 100
     SAFE_DISTANCE = 40
@@ -25,30 +27,27 @@ class Acc():
 
         start_new_thread(self.__acc_on, ())
 
-        
+    def __acc_on(self):  # set_d, brake
 
-    def __acc_on(self): #set_d, brake
-        
         logging.info("Started acc_on")
 
         last_time = time.time()
         set_d = 1
         brake = 0
-        
+
         if brake != 0 or brake != 1 or brake != 2:
-                brake = 0
-                print(brake)
-        
+            brake = 0
+            print(brake)
+
+        sp = 0
         stopped = True
         while True:
-            
+
             delta_d = self.__get_d()
 
             # If we have no value, set speed to 0 as a safety measure
 
-            #delta_v = self.__get_delta_v_for_forward_object()
-            
-            
+            delta_v = self.__get_delta_v_for_forward_object()
 
             c_time = int(time.time())
             if c_time % 3 == 0 and c_time != last_time:
@@ -66,14 +65,10 @@ class Acc():
                 self.drive(0)
                 continue
 
-            #set true if the car has stopped
-            
-            
-            #delta_d = self.__get_d()
-            print(delta_d)
-            
-            #as long as distance is less than desired distance, keep speed
-            if delta_d > set_d: 
+            # set true if the car has stopped
+
+            # as long as distance is less than desired distance, keep speed
+            if delta_d > set_d:
                 sp = self.wanted_speed
                 self.drive(sp)
                 delta_d = self.__get_d()
@@ -83,7 +78,7 @@ class Acc():
                 '''
                 if delta_d > set_d:
                     stopped = False
-                    #time.sleep(0.1)
+                    # time.sleep(0.1)
                 print(delta_d)
             '''
             if distance is smaller than desired distance, brake.
@@ -94,43 +89,45 @@ class Acc():
             when distance is larger than 10 cm.
             '''
             if 0 < delta_d < set_d:
-                #delta_d = self.__get_d()
-                
+                # delta_d = self.__get_d()
+
                 if brake == 0:
                     if not stopped:
-                        if delta_d < set_d/2: #added
-                            electric_braking(self)
-                        else: #added
-                            mod_electric_braking() #added
-                        
+                        if delta_d < set_d / 2:  # added
+                            self.electric_braking()
+                        else:  # added
+                            self.mod_electric_braking()  # added
+
                         print(delta_d)
-                        if delta_d < 10: #Changed from 0.05 to 0.1
+                        if delta_d < 10:  # Changed from 0.05 to 0.1
                             stopped = True
                             self.drive(0)
                 elif brake == 1:
-                    distance_based_brake(self, set_d)
+                    self.distance_based_brake(set_d)
                 elif brake == 2:
-                    decremental_brake(self, sp)
+                    self.decremental_brake(sp)
                 else:
                     sp = 0
                     self.drive(sp)
-                    
+
                     print(delta_d)
 
     def electric_braking(self):
         for x in range(0, 10):
-            #Decrease this to improve braking. Might lead to stalling
+            # Decrease this to improve braking. Might lead to stalling
             self.drive(-100)
+
     '''
     Slower electric brake. To avoid stopping completely
     '''
+
     def mod_electric_braking(self):
         for x in range(0, 10):
-            #Decrease this to improve braking. Might lead to stalling
+            # Decrease this to improve braking. Might lead to stalling
             self.drive(-20)
-    
+
     def decremental_brake(self, sp):
-        for x in range(0,sp):
+        for x in range(0, sp):
             self.drive(sp - (x + 1))
 
     def distance_based_brake(self, set_d):
@@ -142,10 +139,10 @@ class Acc():
                 if sp < 0:
                     sp = 0
                 self.drive(sp)
-                
+
     def drive(self, sp):
         self.speed = sp
-    
+
     def __change_speed(self, delta_v):
         delta_v = float(delta_v)
         self.__set_speed(delta_v + self.current_speed)
@@ -162,7 +159,7 @@ class Acc():
                 else:
                     self.speed = self.wanted_speed
             else:
-                self.speed =speed
+                self.speed = speed
 
     # Gets distance to preceding vehicle, if not more than 2
     def __get_d(self):
