@@ -68,4 +68,5 @@ class Core():
                 self.speed = 0
                 self.steering = 0
 
+            self.acc.current_speed = self.speed
             self.writer.send(self.speed, self.steering)
