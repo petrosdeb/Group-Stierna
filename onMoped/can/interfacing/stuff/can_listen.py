@@ -5,8 +5,6 @@ import sys
 import time
 from _thread import start_new_thread
 
-from can.interfacing.stuff import can_write
-
 
 class CanListener:
     def __init__(self):
@@ -19,7 +17,8 @@ class CanListener:
         self.sock.close()
 
     # opens a socket (using the can0-interface by default)
-    def socket_open(self, network=can_write.CAN_DEVICE):
+    def socket_open(self, network):
+
         logging.info("Opening {} socket . . .".format(network))
         self.sock = socket.socket(socket.AF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
 
@@ -27,7 +26,6 @@ class CanListener:
             self.sock.bind((network,))
         except socket.error as msg:
             print(msg)
-            sys.exit(1)
 
         logging.info("Starting new socket listening thread...")
         start_new_thread(self.listen_thread, (self,))
@@ -48,7 +46,8 @@ class CanListener:
 
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
-                logging.info("{} : {} is reading CAN \n data: {}".format(c_time, type(self).__name__, self.data_fetch(5)))
+                logging.info(
+                    "{} : {} is reading CAN \n data: {}".format(c_time, type(self).__name__, self.data_fetch(5)))
                 last_time = c_time
 
             data = self.sock.recv(64)
