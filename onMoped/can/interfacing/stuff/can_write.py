@@ -56,4 +56,4 @@ class CanWriter:
                 logging.info("{} : continuous send active: {}".format(c_time, (send_speed, send_steer)))  # usch
                 last_time = c_time
 
-            time.sleep(0.01)
+            time.sleep(0.1)
