@@ -46,7 +46,7 @@ class Acc():
 
             # If we have no value, set speed to 0 as a safety measure
 
-            #delta_v = self.__get_delta_v_for_forward_object()
+            delta_v = self.__get_delta_v_for_forward_object()
             
             
 
@@ -99,18 +99,18 @@ class Acc():
                 if brake == 0:
                     if not stopped:
                         if delta_d < set_d/2: #added
-                            electric_braking(self)
+                            self.electric_braking()
                         else: #added
-                            mod_electric_braking() #added
+                            self.mod_electric_braking() #added
                         
                         print(delta_d)
                         if delta_d < 10: #Changed from 0.05 to 0.1
                             stopped = True
                             self.drive(0)
                 elif brake == 1:
-                    distance_based_brake(self, set_d)
+                    self.distance_based_brake(set_d)
                 elif brake == 2:
-                    decremental_brake(self, sp)
+                    self.decremental_brake(sp)
                 else:
                     sp = 0
                     self.drive(sp)
