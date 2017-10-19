@@ -58,7 +58,7 @@ class Core():
             if temp_state != None:
                 self.state = temp_state
 
-            self.acc.wanted_speed = self.communicator.acc_speed
+            self.acc.wanted_speed = int(self.communicator.acc_speed)
 
             if self.state == State.MANUAL:
                 self.speed = self.communicator.speed
@@ -70,5 +70,5 @@ class Core():
                 self.speed = 0
                 self.steering = 0
 
-            self.acc.current_speed = self.speed
+            self.acc.current_speed = int(self.speed)
             self.writer.send(self.speed, self.steering)
