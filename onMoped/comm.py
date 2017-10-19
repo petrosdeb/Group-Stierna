@@ -44,6 +44,7 @@ class Communication():
         # thread listening for socket communication
 
     def listen_thread(self, s):
+        logging.info('Listening thread started')
         connected_log = []
         last_time = time.time()
 

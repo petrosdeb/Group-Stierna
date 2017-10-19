@@ -12,24 +12,26 @@ from can.interfacing.stuff.can_write import CanWriter
 from comm import Communication
 from state import State
 
-from run import port as PORT
-
 
 class Core():
-    def __init__(self, port=PORT):
+    def __init__(self,
+                 port=8888,
+                 can_device='can0',
+                 can_utils_path=' /home/pi/can-utils/cansend'):
+
         self.speed = 0
         self.steering = 0
         self.state = State.MANUAL
 
         logging.info("Starting CanListener")
         self.listener = CanListener()
-        self.listener.socket_open()
+        self.listener.socket_open(can_device)
 
         logging.info("Starting ACC")
         self.acc = Acc(self)
 
         logging.info("Starting CanWriter")
-        self.writer = CanWriter()
+        self.writer = CanWriter(can_device=can_device, can_path=can_utils_path)
         self.writer.start_cont_send()
 
         logging.info("Starting Communication")
@@ -56,7 +58,7 @@ class Core():
             if temp_state != None:
                 self.state = temp_state
 
-            self.acc.wanted_speed = self.communicator.acc_speed
+            self.acc.wanted_speed = int(self.communicator.acc_speed)
 
             if self.state == State.MANUAL:
                 self.speed = self.communicator.speed
@@ -68,4 +70,5 @@ class Core():
                 self.speed = 0
                 self.steering = 0
 
+            self.acc.current_speed = int(self.speed)
             self.writer.send(self.speed, self.steering)

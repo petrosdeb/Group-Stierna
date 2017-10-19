@@ -10,9 +10,7 @@ class Acc():
     DISTANCE_CAP_METRES = 3
     DISTANCE_CAP_CENTIMETRES = DISTANCE_CAP_METRES * 100
     SAFE_DISTANCE = 40
-    WANTED_DISTANCE = 60
-    DECELERATION_FACTOR = -1.5
-    ACCELERATION_FACTOR = 0.5
+    WANTED_DISTANCE = 50
     DIST_DATA_LIFETIME = 1
 
     def __init__(self, core):
@@ -21,6 +19,7 @@ class Acc():
         self.core = core
         self.drive(0)
         self.wanted_speed = 0
+        self.current_speed = 0
 
         self.debug_string = ""
 
@@ -114,7 +113,7 @@ class Acc():
                     decremental_brake(self, sp)
                 else:
                     sp = 0
-                    self.drive(0)
+                    self.drive(sp)
                     
                     print(delta_d)
 
@@ -147,21 +146,23 @@ class Acc():
     def drive(self, sp):
         self.speed = sp
     
-    
     def __change_speed(self, delta_v):
-        previous_output = float(self.core.speed)
         delta_v = float(delta_v)
+        self.__set_speed(delta_v + self.current_speed)
+
+    def __set_speed(self, speed):
         # Should prevent MOPED from backing when "braking" at current speed = 0
-        if previous_output == 0 and delta_v < 0:
-            self.drive(0)
+
+        if self.current_speed is 0 and speed < 0:
+            self.speed = 0
         else:
-            if abs(previous_output + delta_v) > 100:
-                if previous_output + delta_v < 0:
-                    self.drive(-100)
+            if abs(speed) > self.wanted_speed:
+                if speed < 0:
+                    self.speed = -self.wanted_speed
                 else:
-                    self.drive(100)
+                    self.speed = self.wanted_speed
             else:
-                self.drive(previous_output + delta_v)
+                self.speed =speed
 
     # Gets distance to preceding vehicle, if not more than 2
     def __get_d(self):
