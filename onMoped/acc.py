@@ -46,6 +46,8 @@ class Acc:
             delta_d = self.__get_d()
 
             # If we have no value, set speed to 0 as a safety measure
+            
+            '''
 
             delta_v = self.__get_delta_v_for_forward_object()
 
@@ -64,7 +66,7 @@ class Acc:
             if delta_d is None or delta_v is None:
                 self.drive(0)
                 continue
-
+            '''
             # set true if the car has stopped
 
             # as long as distance is less than desired distance, keep speed
