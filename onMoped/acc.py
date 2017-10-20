@@ -31,45 +31,45 @@ class Acc():
 
         while True:
 
-            delta_d = self.__get_d()
+            d_distance = self.__get_distance()
 
             # If we have no value, set speed to 0 as a safety measure
 
-            delta_v = self.__get_delta_v_for_forward_object()
+            d_velocity = self.__get_delta_v_for_forward_object()
 
-            c_time = int(time.time())
-            if c_time % 3 == 0 and c_time != last_time:
+            curr_time = int(time.time())
+            if curr_time % 3 == 0 and curr_time != last_time:
                 logging.info("{} : {} suggest speed : {} | d_dist : {} | d_velo : {} | dbg : {}".format(
-                    c_time,
+                    curr_time,
                     type(self).__name__,
                     self.speed,
-                    delta_d,
-                    delta_v,
+                    d_distance,
+                    d_velocity,
                     self.debug_string
                 ))
-                last_time = c_time
+                last_time = curr_time
 
-            if delta_d is None or delta_v is None:
+            if d_distance is None or d_velocity is None:
                 self.speed = 0
                 continue
 
-            if delta_d >= self.DISTANCE_CAP_CENTIMETRES:
+            if d_distance >= self.DISTANCE_CAP_CENTIMETRES:
                 self.debug_string = "NO DETECTED TARGET"
                 # in case of no obstacles, go for desired speed
                 if self.current_speed != self.wanted_speed:
                     self.speed = self.wanted_speed
-            elif delta_d < self.SAFE_DISTANCE:  # decrease speed if too close to target
+            elif d_distance < self.SAFE_DISTANCE:  # decrease speed if too close to target
                 self.debug_string = "TOO CLOSE TO TARGET"
                 self.__set_speed(-self.wanted_speed)
-            elif delta_d > self.WANTED_DISTANCE:  # increase speed if too far away from target
+            elif d_distance > self.WANTED_DISTANCE:  # increase speed if too far away from target
                 self.debug_string = "NOT CLOSE ENOUGH TO TARGET"
                 self.__set_speed(self.wanted_speed)
-            elif delta_v < 0:  # decrease speed if moving too fast relative to target
+            elif d_velocity < 0:  # decrease speed if moving too fast relative to target
                 self.debug_string = "TOO FAST"
-                self.__change_speed(delta_v)
-            elif delta_v > 0:  # increase speed if too slow relative to target
+                self.__change_speed(d_velocity)
+            elif d_velocity > 0:  # increase speed if too slow relative to target
                 self.debug_string = "GOTTA GO FAST"
-                self.__change_speed(delta_v)
+                self.__change_speed(d_velocity)
             else:
                 self.debug_string = "NOTHING HAPPENS"
 
@@ -91,7 +91,7 @@ class Acc():
                 self.speed =speed
 
     # Gets distance to preceding vehicle, if not more than 2
-    def __get_d(self):
+    def __get_distance(self):
         if len(self.core.get_ultra_data()) == 0:
             return None
 
@@ -113,6 +113,7 @@ class Acc():
 
         self.__check_timestamp_validity()
 
+    # Remove too old data (threshold = DIST_DATA_LIFETIME)
     def __check_timestamp_validity(self):
         while time.clock() - self.distance_time_list[0] > self.DIST_DATA_LIFETIME:
             self.distance_list = self.distance_list[1:]
@@ -141,15 +142,16 @@ class Acc():
         t1 = self.__get_average_of(self.distance_time_list[:half_point_floored])
 
         # The incline between p0 and p1 is the relative speed
-        delta_d = d1 - d0
-        delta_t = t1 - t0
+        d_distance = d1 - d0
+        d_time = t1 - t0
 
-        if delta_d is 0 or delta_t is 0:
+        if d_distance is 0 or d_time is 0:
             return None
 
-        return delta_d / delta_t
+        return d_distance / d_time
 
-    def __get_average_of(self, my_list):
+    @staticmethod
+    def __get_average_of(my_list):
         if not len(my_list):
             return 0  # see no evil
 
