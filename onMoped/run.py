@@ -11,6 +11,7 @@ from core import Core
 __default_port = 8888
 __can_device = 'can0'
 __can_utils_path = "/home/pi/can-utils/cansend"
+__spoof_data = False
 
 if __name__ == '__main__' and len(sys.argv) > 1:
     skip = 0
@@ -37,6 +38,9 @@ if __name__ == '__main__' and len(sys.argv) > 1:
                 logging.basicConfig(stream=sys.stderr, level=int(args[idx + 1]))
                 skip = 1
 
+            if arg == '--spoof_data' or arg == '-s':
+                __spoof_data = True
+
         except IndexError as e:
             print("Missing arg for {}".format(arg))
 
@@ -44,4 +48,4 @@ logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 logging.info("Init core, port {}, device {}, utils_path {}".format(__default_port, __can_device, __can_utils_path))
 
-core_inst = Core(port=__default_port, can_device=__can_device, can_utils_path=__can_utils_path)
+core_inst = Core(port=__default_port, can_device=__can_device, can_utils_path=__can_utils_path, spoof_core=__spoof_data)

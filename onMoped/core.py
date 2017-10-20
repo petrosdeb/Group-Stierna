@@ -6,14 +6,17 @@ from acc import Acc
 from can.interfacing.stuff.can_listen import CanListener
 from can.interfacing.stuff.can_write import CanWriter
 from comm import Communication
+from core_interface import CoreInterface
+from spoof_ultra_data import SpoofCore
 from state import State
 
 
-class Core():
+class Core(CoreInterface):
     def __init__(self,
                  port=8888,
                  can_device='can0',
-                 can_utils_path=' /home/pi/can-utils/cansend'):
+                 can_utils_path=' /home/pi/can-utils/cansend',
+                 spoof_core=False):
 
         self.speed = 0
         self.steering = 0
@@ -24,7 +27,10 @@ class Core():
         self.listener.socket_open(can_device)
 
         logging.info("Starting ACC")
-        self.acc = Acc(self)
+        c = self
+        if spoof_core:
+            c = SpoofCore()
+        self.acc = Acc(c )
 
         logging.info("Starting CanWriter")
         self.writer = CanWriter(can_device=can_device, can_path=can_utils_path)
