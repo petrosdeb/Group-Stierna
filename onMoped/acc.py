@@ -88,7 +88,7 @@ class Acc():
                 else:
                     self.speed = self.wanted_speed
             else:
-                self.speed =speed
+                self.speed = speed
 
     # Gets distance to preceding vehicle, if not more than 2
     def __get_distance(self):
