@@ -1,27 +1,31 @@
-'''
-    Simple socket server using threads
-'''
 import logging
 import socket
 import sys
-# opens a socket and starts a thread listening for communication on that socket
+
 import time
 from _thread import start_new_thread
 
 from state import State, char_to_state
 
+'''
+Class for handling outside communication,
+implementing a simple server-style socket
+
+
+On the MOPED, this is used to receive inputs 
+from an  Android-application
+'''
+
 
 class Communication():
     def __init__(self):
-        self.data_log = None
         self.state = State.MANUAL
         self.steering = 0
         self.speed = 0
         self.acc_speed = 0
 
+    # initiates the socket and starts the listen thread
     def start_listen(self, port, host=''):
-        self.data_log = []  # each thread writes to the same array (which might be a bad idea)
-
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         logging.info('Socket created: \'' + host + '\'@' + str(port))
@@ -37,13 +41,10 @@ class Communication():
 
         logging.info('Socket now listening')
 
-        start_new_thread(self.listen_thread, (s,))
+        start_new_thread(self.__listen_thread, (s,))
 
-        return self.data_log
-
-        # thread listening for socket communication
-
-    def listen_thread(self, s):
+    # thread waiting for connecting sockets
+    def __listen_thread(self, s):
         logging.info('Listening thread started')
         connected_log = []
         last_time = time.time()
@@ -60,10 +61,10 @@ class Communication():
                 connected_log.append(address[0])
                 logging.info("New client: {}@{}".format(address[0], address[1]))
 
-            start_new_thread(self.client_thread, (conn, address))
+            start_new_thread(self.__client_thread, (conn, address))
 
     # a new client_thread is opened whenever a new connection is established
-    def client_thread(self, conn, address):
+    def __client_thread(self, conn, address):
         # infinite loop so that function do not terminate and thread do not end.
         while True:
             # Receiving from client
@@ -78,15 +79,14 @@ class Communication():
             except UnicodeDecodeError as e:
                 logging.error("Closed %s@%s due to encoding error", address[0], str(address[1]))
                 return
-            self.data_log.append(data)
 
-            self.interpret(data)
+            self.__interpret(data)
 
         # came out of loop
         conn.close()
 
     # decides what to do with a received message
-    def interpret(self, data):
+    def __interpret(self, data):
         if not data:
             return
         args = data.split(" ")
@@ -98,10 +98,10 @@ class Communication():
         if len(args) > 1:
             val = args[1]
 
-        self.do_function(function_charcode, val)
+        self.__do_command(function_charcode, val)
 
     # executes a function up to one value
-    def do_function(self, fun, val):
+    def __do_command(self, fun, val):
         if fun == 'a':
             self.acc_speed = val
         elif fun == 'd':
