@@ -209,7 +209,7 @@ def readgyro0():
                 if rx > 120 and g.finspeed != 0 and g.dstatus != 2:
                     inhibitdodrive()
                     g.dstatus = 2
-                    cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+                    cmd = "/home/pi/control-utils/cansend can0 '101#%02x%02x'" % (
                         246, 0)
                     os.system(cmd)
     #                dodrive(0, 0)

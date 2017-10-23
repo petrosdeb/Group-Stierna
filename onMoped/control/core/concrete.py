@@ -2,13 +2,11 @@ import logging
 import time
 from _thread import start_new_thread
 
-from acc import Acc
-from can.interfacing.can.can_listen import CanListener
-from can.interfacing.can.can_write import CanWriter
-from comm import Communication
-from core_interface import CoreInterface
-from spoof_ultra_data import SpoofCore
-from state import State
+from control.acc.handler import AccHandler
+from control.comm.comm import CommunicationHandler
+from control.core.interface import CoreInterface
+from control.core.spoof import SpoofCore
+from control.state import State
 
 '''
 A real implementation of CoreInterface
@@ -19,7 +17,7 @@ between them.
 '''
 
 
-class Core(CoreInterface):
+class CoreConcrete(CoreInterface):
     def __init__(self,
                  port,
                  can_device,
@@ -38,14 +36,14 @@ class Core(CoreInterface):
         c = self
         if spoof_core:
             c = SpoofCore()
-        self.acc = Acc(c)
+        self.acc = AccHandler(c)
 
         logging.info("Starting CanWriter")
         self.writer = CanWriter(can_device=can_device, can_path=can_utils_path)
         self.writer.start_cont_send()
 
         logging.info("Starting Communication")
-        self.communicator = Communication()
+        self.communicator = CommunicationHandler()
         self.communicator.start_listen(port)
 
         logging.info("Starting core thread")

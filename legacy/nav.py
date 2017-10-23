@@ -20,7 +20,7 @@ def readvin():
     g.simulate = False
 
     try:
-        f = open("/home/pi/can-utils/java/settings.properties")
+        f = open("/home/pi/control-utils/java/settings.properties")
         for line0 in f:
             line = line0[:-1]
             m = re.match("VIN=(.*)", line)
@@ -136,7 +136,7 @@ g.paused = False
 
 #--------------------
 
-# can be local to wm.py
+# control be local to wm.py
 g.adjust_t = None
 
 g.shiftx = 0.0

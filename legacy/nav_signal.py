@@ -43,7 +43,7 @@ def setleds(mask, code):
     print("setleds %d %d" % (mask, code))
 
     if False:
-        cmd = "/home/pi/can-utils/cansend can0 '461#060000006D3%d3%d00'" % (
+        cmd = "/home/pi/control-utils/cansend can0 '461#060000006D3%d3%d00'" % (
             mask, code)
         os.system(cmd)
     else:

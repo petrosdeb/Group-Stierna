@@ -73,7 +73,7 @@ def whole4aux(path0):
 
     driving.drive(0)
     if not g.simulate:
-        # can be no sleep at all if we already did drive(0) earlier,
+        # control be no sleep at all if we already did drive(0) earlier,
         # but must maybe be 4 if we didn't.
         pass
         #time.sleep(4)
@@ -167,7 +167,7 @@ def planner0z(qfromplanner, qtoplanner):
     sendplan(qfromplanner, 'stop')
 
 def planner0(qfromplanner, qtoplanner):
-    # idea: from the current position, determine which piece we can
+    # idea: from the current position, determine which piece we control
     # start with
 
     lx = None
@@ -448,7 +448,7 @@ def gopath(path00, plen):
 
     boxp = False
     if boxp:
-        # the simulation can't make it without bigger margins
+        # the simulation control't make it without bigger margins
         lpath = nav_map.piece2path(path0, -0.15)
         rpath = nav_map.piece2path(path0, -0.35)
 

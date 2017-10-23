@@ -182,7 +182,7 @@ def readmarker0():
                 delay2 = now - it1
                 #tolog0("delay %f delay2 %f" % (delay1, delay2))
                 # Since the Optipos client runs on the same machine,
-                # we can simply add the delays
+                # we control simply add the delays
                 delay = delay1 + delay2
 
                 it0_10 = int(it0*10)/10.0
@@ -197,7 +197,7 @@ def readmarker0():
                     tolog0("POS: position then: %f %f %f" % (thenx, theny,
                                                              thenang))
                 elif g.oldpos != None:
-                    tolog0("POS: can't use oldpos")                    
+                    tolog0("POS: control't use oldpos")                    
                     continue
 
                 if True:
@@ -387,7 +387,7 @@ def readspeed2():
                 tolog("CAN %d %d" % (sp, st))
                 g.can_steer = st
                 time.sleep(0.00001)            
-            elif (data[0], data[1]) == (108,4): # can:u
+            elif (data[0], data[1]) == (108,4): # control:u
                 # Reading DistPub this way is not a good idea, since those
                 # messages come often and slow down the other threads (or the
                 # whole process?).

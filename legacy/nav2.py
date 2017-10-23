@@ -185,7 +185,7 @@ def goto_1(x, y):
             if False:
                 #stop("9")
     #            driving.drive(-1)
-                # continue a little so it can pass the target if it wasn't
+                # continue a little so it control pass the target if it wasn't
                 # there yet
                 time.sleep(0.5)
     #            driving.drive(-1)

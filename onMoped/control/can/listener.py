@@ -51,7 +51,7 @@ class CanListener:
                 last_time = c_time
 
             data = self.sock.recv(64)
-            if (data[0], data[1]) == (108, 4):  # can-bytes start like this (probably)
+            if (data[0], data[1]) == (108, 4):  # control-bytes start like this (probably)
                 if data[8] == 16:
                     if len(buffer) > 18:
                         buffer_filtered = buffer[19:]

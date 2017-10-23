@@ -16,7 +16,7 @@ def average_distance(amount):
     total_distance = 0
     for x in range(0, amount):
         time.sleep(0.1)
-        #if we want to put more value to the last readings we can set total_distance = total_distance + (x)*g.can_ultra or something similar
+        #if we want to put more value to the last readings we control set total_distance = total_distance + (x)*g.can_ultra or something similar
         total_distance = total_distance + g.can_ultra 
     return total_distance/amount        
 

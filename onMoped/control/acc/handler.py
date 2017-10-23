@@ -5,7 +5,7 @@ from _thread import start_new_thread
 from math import ceil, floor
 
 
-class Acc():
+class AccHandler():
     DISTANCE_CAP_METRES = 3
     DISTANCE_CAP_CENTIMETRES = DISTANCE_CAP_METRES * 100
     SAFE_DISTANCE = 40

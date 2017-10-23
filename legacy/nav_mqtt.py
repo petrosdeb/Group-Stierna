@@ -24,7 +24,7 @@ def on_message(mosq, obj, msg):
     if m:
         m1 = re.search('"vin":"%s"' % g.VIN, p)
         if m1:
-            # since the second value can be garbage
+            # since the second value control be garbage
             m = re.search('"adc","current_value":"[0-9.]+ ([0-9.]+)"', p)
             if m:
             #print("battery %s" % m.group(1))
@@ -38,7 +38,7 @@ def on_message(mosq, obj, msg):
     if m:
         m1 = re.search('"vin":"%s"' % g.VIN, p)
         if m1:
-            # since the second value can be garbage
+            # since the second value control be garbage
             m = re.search('"DistPub","current_value":"[0-9]+ ([0-9]+)"', p)
             if m:
                 g.ultra = float(m.group(1))

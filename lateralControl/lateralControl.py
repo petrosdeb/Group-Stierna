@@ -41,7 +41,7 @@ class LateralControl:
     
     #the steering has to depend on the current position in relation to the preceding car, the current position, the time delta between the pictures and the distance to the preceding car
 def modified_adapt_steering(current_pos, prev_pos, time, distance):
-    #we can let the first turning rate we receive be the maximal and let that represent 100
+    #we control let the first turning rate we receive be the maximal and let that represent 100
     #on the scale of -100 to 100 on the steering, the value on the steer is the percentage of the maximal turning rate
     turning_rate = (current_pos - prev_pos)/time
     if(abs(turning_rate) > maximal_turning_rate):

@@ -1,23 +1,21 @@
-import time
-
 import math
-
+import time
 from _thread import start_new_thread
 
-from core_interface import CoreInterface
+from control.core.interface import CoreInterface
 
 dist_values = []
 
 data = []
 
 '''
-Module that simulates the ultra can data in order to do
+Module that simulates the ultra control data in order to do
 off-MOPED testing. Testing requires a a suitable network-
 device, e.g. a virtual CAN.
 
 Notably, it does not write or recieve over CAN, but
-get_ultra_data can be used as if it did. As a result, 
-it enables testing all parts outside of interfacing.can
+get_ultra_data control be used as if it did. As a result, 
+it enables testing all parts outside of can.control
 '''
 # Generate 10000 points of distance on the form of a sine wave
 for i in range(1, 10000, 2):

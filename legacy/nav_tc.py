@@ -172,7 +172,7 @@ def from_ground_control():
                 elif l[0] == "parameter":
                     g.parameter = int(l[1])
                     print("parameter %d" % g.parameter)
-                # can be used so we don't have to stop if the next
+                # control be used so we don't have to stop if the next
                 # section is free
                 elif l[0] == "waitallcarsdone":
                     g.queue.put(1)

@@ -40,7 +40,7 @@ def drive(sp):
         if st < 0:
             st += 256
         tolog("motor %d steer %d" % (sp, g.steering))
-        cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+        cmd = "/home/pi/control-utils/cansend can0 '101#%02x%02x'" % (
             sp, st)
         #print (sp, g.steering, cmd)
         os.system(cmd)
@@ -57,7 +57,7 @@ def steer(st):
 #        sp += 256
 
 #    tolog("motor %d steer %d" % (g.outspeed, st))
-#    cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+#    cmd = "/home/pi/control-utils/cansend can0 '101#%02x%02x'" % (
 #        sp, st)
     #print (g.outspeed, st, cmd)
     dodrive(sp, st)
@@ -103,7 +103,7 @@ def senddrive():
             if not g.senddriveinhibited:
                 if (sp == 0 and not first0done) or g.last_send != (sp, st):
 #                if True:
-                    cmd = "/home/pi/can-utils/cansend can0 '101#%02x%02x'" % (
+                    cmd = "/home/pi/control-utils/cansend can0 '101#%02x%02x'" % (
                         sp, st)
                     #tolog("senddrive %d %d" % (g.send_sp, g.send_st))
                     #print("senddrive %d %d" % (g.send_sp, g.send_st))
@@ -114,7 +114,7 @@ def senddrive():
         if g.ledcmd:
             (mask, code) = g.ledcmd
             #print("doing setleds %d %d" % (mask, code))
-            cmd = "/home/pi/can-utils/cansend can0 '461#060000006D3%d3%d00'" % (
+            cmd = "/home/pi/control-utils/cansend can0 '461#060000006D3%d3%d00'" % (
                 mask, code)
             os.system(cmd)
             g.ledcmd = None

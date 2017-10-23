@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from core import Core
+from control.core.concrete import CoreConcrete
 
 # myv: vcan0, cansend
 
@@ -10,7 +10,7 @@ from core import Core
 
 __default_port = 8888
 __can_device = 'can0'
-__can_utils_path = "/home/pi/can-utils/cansend"
+__can_utils_path = "/home/pi/control-utils/cansend"
 __spoof_data = False
 
 if __name__ == '__main__' and len(sys.argv) > 1:
@@ -48,4 +48,4 @@ logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 logging.info("Init core, port {}, device {}, utils_path {}".format(__default_port, __can_device, __can_utils_path))
 
-core_inst = Core(port=__default_port, can_device=__can_device, can_utils_path=__can_utils_path, spoof_core=__spoof_data)
+core_inst = CoreConcrete(port=__default_port, can_device=__can_device, can_utils_path=__can_utils_path, spoof_core=__spoof_data)
