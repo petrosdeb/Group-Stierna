@@ -13,6 +13,7 @@ __can_device = 'can0'
 __can_utils_path = "/home/pi/control-utils/cansend"
 __spoof_data = False
 
+# Parse commandline args
 if __name__ == '__main__' and len(sys.argv) > 1:
     skip = 0
     args = sys.argv
@@ -44,9 +45,14 @@ if __name__ == '__main__' and len(sys.argv) > 1:
         except IndexError as e:
             print("Missing arg for {}".format(arg))
 
+# Set the default logger level (if written beforehand, this is ignored)
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 logging.info("Init core, port {}, device {}, utils_path {}".format(__default_port, __can_device, __can_utils_path))
 
-core_inst = CoreConcrete(port=__default_port, can_device=__can_device, can_utils_path=__can_utils_path,
-                         spoof_core=__spoof_data)
+# Instantiate the main process
+core_inst = CoreConcrete(
+    port=__default_port,
+    can_device=__can_device,
+    can_utils_path=__can_utils_path,
+    spoof_core=__spoof_data)
