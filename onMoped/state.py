@@ -1,5 +1,13 @@
 from enum import Enum
 
+'''
+Simple enum-class representing the 3 driving 
+states of the MOPED.
+
+Used in core to determine what output values
+are written
+'''
+
 
 class State(Enum):
     MANUAL = 0
