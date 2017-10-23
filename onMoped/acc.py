@@ -73,6 +73,7 @@ class Acc():
             else:
                 self.debug_string = "NOTHING HAPPENS"
 
+    # change speed relative to last speed
     def __change_speed(self, delta_v):
         delta_v = float(delta_v)
         self.__set_speed(delta_v + self.current_speed)
@@ -90,7 +91,7 @@ class Acc():
             else:
                 self.speed = speed
 
-    # Gets distance to preceding vehicle, if not more than 2
+    # gets distance to preceding vehicle, if not more than 2
     def __get_distance(self):
         if len(self.core.get_ultra_data()) == 0:
             return None
@@ -113,15 +114,13 @@ class Acc():
 
         self.__check_timestamp_validity()
 
-    # Remove too old data (threshold = DIST_DATA_LIFETIME)
+    # remove too old data (threshold = DIST_DATA_LIFETIME)
     def __check_timestamp_validity(self):
         while time.clock() - self.distance_time_list[0] > self.DIST_DATA_LIFETIME:
             self.distance_list = self.distance_list[1:]
             self.distance_time_list = self.distance_time_list[1:]
 
-    # Approximates the difference in speed to
-    # the target by using constructing a
-    # linear function from two (distance, time) points
+    # approximate relative velocity based on distance change
     def __get_delta_v_for_forward_object(self):
         size = len(self.distance_list)
         if not size:
@@ -150,6 +149,7 @@ class Acc():
 
         return d_distance / d_time
 
+    # return average value in a list
     @staticmethod
     def __get_average_of(my_list):
         if not len(my_list):
