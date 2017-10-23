@@ -4,7 +4,7 @@
 """
 import cv
 
-### Set variable to Flase to disable desktop graphical preview ###
+### Set variable to False to disable desktop graphical preview ###
 DESKTOPMODE = True
 
 def __init__():
