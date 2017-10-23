@@ -13,9 +13,9 @@ from state import State
 
 class Core(CoreInterface):
     def __init__(self,
-                 port=8888,
-                 can_device='can0',
-                 can_utils_path=' /home/pi/can-utils/cansend',
+                 port,
+                 can_device,
+                 can_utils_path,
                  spoof_core=False):
 
         self.speed = 0
@@ -30,7 +30,7 @@ class Core(CoreInterface):
         c = self
         if spoof_core:
             c = SpoofCore()
-        self.acc = Acc(c )
+        self.acc = Acc(c)
 
         logging.info("Starting CanWriter")
         self.writer = CanWriter(can_device=can_device, can_path=can_utils_path)
