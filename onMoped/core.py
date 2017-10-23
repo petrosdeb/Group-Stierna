@@ -3,12 +3,20 @@ import time
 from _thread import start_new_thread
 
 from acc import Acc
-from can.interfacing.stuff.can_listen import CanListener
-from can.interfacing.stuff.can_write import CanWriter
+from can.interfacing.can.can_listen import CanListener
+from can.interfacing.can.can_write import CanWriter
 from comm import Communication
 from core_interface import CoreInterface
 from spoof_ultra_data import SpoofCore
 from state import State
+
+'''
+A real implementation of CoreInterface
+
+Initiates sub-processes, usually running in
+a separate thread, and reads/supplies the data 
+between them.
+'''
 
 
 class Core(CoreInterface):
@@ -43,6 +51,7 @@ class Core(CoreInterface):
         logging.info("Starting core thread")
         start_new_thread(self.__core_thread, ())
 
+    # returns the last n ultra data values
     def get_ultra_data(self, n=1):
         return self.listener.data_fetch(n)
 

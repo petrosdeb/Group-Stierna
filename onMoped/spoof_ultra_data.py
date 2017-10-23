@@ -10,10 +10,15 @@ dist_values = []
 
 data = []
 
-# Class that simulates the ultra can data in order to do
-# off-MOPED testing. Testing requires a a suitable network-
-# device, e.g. a virtual CAN
+'''
+Module that simulates the ultra can data in order to do
+off-MOPED testing. Testing requires a a suitable network-
+device, e.g. a virtual CAN.
 
+Notably, it does not write or recieve over CAN, but
+get_ultra_data can be used as if it did. As a result, 
+it enables testing all parts outside of interfacing.can
+'''
 # Generate 10000 points of distance on the form of a sine wave
 for i in range(1, 10000, 2):
     val = (math.sin(i / 40) + 1) * 30
