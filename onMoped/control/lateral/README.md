@@ -17,6 +17,7 @@ navigation.py:
                    Tips: Use test.jpg to test the code.
 
          get_xposition(image) - takes a image as param, returns the x-position of the barcode if there is a 
-                  barcode detected. To open a preview of the picture with the barcode marked change "DESKTOPMODE = True ".
+                  barcode detected. To open a preview of the picture with the barcode marked change 
+                  "DESKTOPMODE = True ".
          
          
