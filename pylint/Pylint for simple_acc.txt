@@ -9,4 +9,4 @@ E: 35,19: Undefined variable 'g' (undefined-variable)
 ------------------------------------------------------------------
 Your code has been rated at 1.88/10 (previous run: 1.88/10, +0.00)
 
-All errors are related to the code written by Arndt.
+All these errors are related to the code written by Arndt and they are likewise resolved when running on the MOEPED.
