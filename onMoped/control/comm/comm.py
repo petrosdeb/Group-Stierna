@@ -4,7 +4,7 @@ import sys
 import time
 from _thread import start_new_thread
 
-from control.state import State, char_to_state
+from state import State, char_to_state
 
 '''
 Class for handling outside communication,

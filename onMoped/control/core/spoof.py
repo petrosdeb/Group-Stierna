@@ -2,7 +2,7 @@ import math
 import time
 from _thread import start_new_thread
 
-from control.core.interface import CoreInterface
+from core.interface import CoreInterface
 
 dist_values = []
 

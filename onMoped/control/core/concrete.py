@@ -2,11 +2,13 @@ import logging
 import time
 from _thread import start_new_thread
 
-from control.acc.handler import AccHandler
-from control.comm.comm import CommunicationHandler
-from control.core.interface import CoreInterface
-from control.core.spoof import SpoofCore
-from control.state import State
+from acc.handler import AccHandler
+from can.listener import CanListener
+from can.writer import CanWriter
+from comm.comm import CommunicationHandler
+from core.interface import CoreInterface
+from core.spoof import SpoofCore
+from state import State
 
 '''
 A real implementation of CoreInterface

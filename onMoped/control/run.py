@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from control.core.concrete import CoreConcrete
+from core.concrete import CoreConcrete
 
 # myv: vcan0, cansend
 
@@ -48,4 +48,5 @@ logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 logging.info("Init core, port {}, device {}, utils_path {}".format(__default_port, __can_device, __can_utils_path))
 
-core_inst = CoreConcrete(port=__default_port, can_device=__can_device, can_utils_path=__can_utils_path, spoof_core=__spoof_data)
+core_inst = CoreConcrete(port=__default_port, can_device=__can_device, can_utils_path=__can_utils_path,
+                         spoof_core=__spoof_data)

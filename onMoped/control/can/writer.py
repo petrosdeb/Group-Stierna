@@ -21,7 +21,7 @@ class CanWriter:
         logging.info("Starting continuous send")
         start_new_thread(self.continuous_send, ())  # Shorthand for sending via control-utils
 
-    # if no value is given, it sends the last value to hold that value
+    # sets the value sent over can
     def send(self, input_speed=None, input_steer=None):
 
         if input_speed is None:
