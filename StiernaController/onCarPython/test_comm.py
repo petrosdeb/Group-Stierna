@@ -1,9 +1,7 @@
 '''unit testing for communication'''
 import socket
-import unittest
-from time import sleep
 
-import comm
+from control.comm import comm
 
 PORT = 9000
 
