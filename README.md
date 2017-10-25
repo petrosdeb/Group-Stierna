@@ -5,6 +5,8 @@ Repository for Group Stierna in the development of a platooning system for the M
 
 To drive the MOPED using the app you need to get the Android-app from the IntelliJ-project StiernaController. You also need to upload the onMoped-directory to the MOPED:s TCU.
 
+Code documentation can be found in the README:s under each folder.
+
 [Team members](.mailmap)
 
 [Trello Backlog](https://trello.com/b/THHlHSP9)
