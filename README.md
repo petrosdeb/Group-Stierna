@@ -3,16 +3,18 @@ Repository for Group Stierna in the development of a platooning system for the M
 
 [MOPED Github repository](https://github.com/sics-sse/moped)
 
-To drive the MOPED using the app you need to get the Android-app from the IntelliJ-project StiernaController. You also need to upload the onMoped-directory to the MOPED:s TCU.
+This repository contains two parts; an "onMoped" python3-package that's run on the MOPED and an Android-app for remote control. 
 
-Code documentation can be found in the README:s under each folder.
+**The onMoped** package is mostly self-serving, but requires [can-utils](https://github.com/linux-can/can-utils) to communicate with the other ECU:s on the MOPED.
 
-[Team members](.mailmap)
 
-[Trello Backlog](https://trello.com/b/THHlHSP9)
+Documentation related to the assignment, such as sprint retrospectives and code reviews can be found on the [documentation branch](https://github.com/petrosdeb/Group-Stierna/tree/documentation)
 
-[Reflection report](reflectionreport)
+`/StiernaController` contains the source code for the Android-app that can control the MOPED over local network.
 
-[Sprint retrospectives](sprintretrospectives)
+`/onMoped/control` contains most of the relevant code running on the MOPED. It needs to be initiated with `run.py`.
 
-[Code Documentation](documentation)
+`/legacy` contains ancient code from the original MOPED repository, on which the communication over the CAN is based. It is kept mostly for posterity.
+
+[Trello Backlog](https://trello.com/b/THHlHSP9) 
+**TODO move this to documentation**
