@@ -59,10 +59,10 @@ class CoreConcrete(CoreInterface):
 
         last_time = 0
         while True:
-            if not self.writer.hasSent:
+            if not self.writer.has_sent:
                 continue
 
-            self.writer.hasSent = True
+            self.writer.has_sent = True
 
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
