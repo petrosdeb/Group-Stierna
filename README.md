@@ -4,3 +4,5 @@ This branch contains documentation related to the assignment of the DAT255 cours
 `/doc` contains deliverables 1 through 3 and the social contract.
 
 `/retrospectives` contains sprint retrospectives
+
+The team's scrum board can be found here: [Trello Backlog](https://trello.com/b/THHlHSP9). Old sprints are archived.
