@@ -17,5 +17,3 @@ Documentation related to the assignment, such as sprint retrospectives and deliv
 
 `/legacy` contains ancient code from the original MOPED repository, on which the communication over the CAN is based. It is kept mostly for posterity.
 
-[Trello Backlog](https://trello.com/b/THHlHSP9) 
-**TODO move this to documentation**
