@@ -9,7 +9,7 @@ This repository contains two parts; an "onMoped" python3-package that's run on t
 
 _______
 
-Documentation related to the assignment, such as sprint retrospectives and code reviews can be found on the [documentation branch](https://github.com/petrosdeb/Group-Stierna/tree/documentation)
+Documentation related to the assignment, such as sprint retrospectives and deliverables can be found on the [documentation branch](https://github.com/petrosdeb/Group-Stierna/tree/documentation)
 
 `/StiernaController` contains the source code for the Android-app that can control the MOPED over local network.
 
