@@ -1,3 +1,6 @@
+"""This module includes the concrete
+implementation of CoreInterface"""
+
 import logging
 import time
 from _thread import start_new_thread
@@ -10,16 +13,16 @@ from core.interface import CoreInterface
 from core.spoof import SpoofCore
 from state import State
 
-'''
-A real implementation of CoreInterface
-
-Initiates sub-processes, usually running in
-a separate thread, and reads/supplies the data 
-between them.
-'''
-
 
 class CoreConcrete(CoreInterface):
+    """
+    A real implementation of CoreInterface
+
+    Initiates sub-processes, usually running in
+    a separate thread, and reads/supplies the data
+    between them.
+    """
+
     def __init__(self,
                  port,
                  can_device,
@@ -35,10 +38,10 @@ class CoreConcrete(CoreInterface):
         self.listener.socket_open(can_device)
 
         logging.info("Starting ACC")
-        c = self
+        acc_core = self
         if spoof_core:
-            c = SpoofCore()
-        self.acc = AccHandler(c)
+            acc_core = SpoofCore()
+        self.acc = AccHandler(acc_core)
 
         logging.info("Starting CanWriter")
         self.writer = CanWriter(can_device=can_device, can_path=can_utils_path)
@@ -59,14 +62,15 @@ class CoreConcrete(CoreInterface):
 
         last_time = 0
         while True:
-            if not self.writer.hasSent:
+            if not self.writer.has_sent:
                 continue
 
-            self.writer.hasSent = True
+            self.writer.has_sent = True
 
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
-                logging.info("{} : {} is running, state= {}".format(c_time, type(self).__name__, self.state))
+                logging.info("%d : %s is running, state= %s",
+                             c_time, type(self).__name__, self.state)
                 last_time = c_time
 
             temp_state = self.communicator.state

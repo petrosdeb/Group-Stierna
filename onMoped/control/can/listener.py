@@ -1,3 +1,7 @@
+"""This module contains the CanListener class
+which is used to listen to communication over
+a can-network"""
+
 import logging
 import re
 import socket
@@ -6,19 +10,25 @@ from _thread import start_new_thread
 
 
 class CanListener:
+    """Usage: calling socket_open opens a socket
+    which passively listens for can-data and
+    stores it as a (time, value) tuple.
+    data_fetch to retrieve"""
+
     def __init__(self):
         self.dist_log = []
         self.sock = None
 
     def socket_close(self):
+        """Closes the open socket"""
         logging.info("Closing socket")
         self.sock.shutdown()
         self.sock.close()
 
-    # opens a socket (using the can0-interface by default)
     def socket_open(self, network):
-
-        logging.info("Opening {} socket . . .".format(network))
+        """Opens a can-socket
+        :param network a can-device such as can0"""
+        logging.info("Opening %s socket . . .", network)
         self.sock = socket.socket(socket.AF_CAN, socket.SOCK_RAW, socket.CAN_RAW)
 
         try:
@@ -27,16 +37,18 @@ class CanListener:
             print(msg)
 
         logging.info("Starting new socket listening thread...")
-        start_new_thread(self.listen_thread, (self,))
+        start_new_thread(self.__listen_thread, ())
 
     def __dist_push_data__(self, value):
         self.dist_log.append(
             (time.clock(), value))
 
-    def data_fetch(self, fetchNumber):
-        return self.dist_log[-fetchNumber:]
+    def data_fetch(self, fetch_number=1):
+        """Returns the latest data entries as a list of (time,value) tuples
+        :param fetch_number the number to retrieve"""
+        return self.dist_log[-fetch_number:]
 
-    def listen_thread(self, varargs=None):
+    def __listen_thread(self, ):
         buffer = b""
 
         last_time = 0
@@ -45,8 +57,9 @@ class CanListener:
 
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
-                logging.info(
-                    "{} : {} is reading CAN \n data: {}".format(c_time, type(self).__name__, self.data_fetch(5)))
+                logging.info("%d: %s is reading CAN \n data: %d",
+                             c_time, type(self).__name__, self.data_fetch()[0])
+
                 last_time = c_time
 
             data = self.sock.recv(64)
@@ -58,11 +71,12 @@ class CanListener:
                         msg_len = buffer[18]
                         buffer_msg_slice = buffer_filtered_decoded[0:msg_len]
 
-                        m = re.search("^([0-9]+) ([0-9]+) $", buffer_msg_slice)  # idk what this actually does
-                        if m:
-                            d = int(m.group(2))
+                        # magic reg-ex stolen from legacy
+                        msg = re.search("^([0-9]+) ([0-9]+) $", buffer_msg_slice)
+                        if msg:
+                            distance = int(msg.group(2))
                             # if d != 3400:
-                            self.__dist_push_data__(d)
+                            self.__dist_push_data__(distance)
                         buffer = b""
                         time.sleep(0.00001)
                 buffer += data[9:]

@@ -1,3 +1,6 @@
+"""This module contains the CommunicationHandler
+that reads data from a socket, for use with
+an Android app"""
 import logging
 import socket
 import sys
@@ -6,17 +9,19 @@ from _thread import start_new_thread
 
 from state import State, char_to_state
 
-'''
-Class for handling outside communication,
-implementing a simple server-style socket
 
+class CommunicationHandler:
+    """The class is self-serving and can be
+    polled for values on-demand, i.e.
+        state
+        steering
+        speed
+        acc_speed
 
-On the MOPED, this is used to receive inputs 
-from an  Android-application
-'''
+    Usage:
+    start_listen needs to be called to start
+    the listening thread"""
 
-
-class CommunicationHandler():
     def __init__(self):
         self.state = State.MANUAL
         self.steering = 0
@@ -25,40 +30,42 @@ class CommunicationHandler():
 
     # initiates the socket and starts the listen thread
     def start_listen(self, port, host=''):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        """Starts listening for connecting sockets"""
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         logging.info('Socket created: \'' + host + '\'@' + str(port))
 
         try:
-            s.bind((host, port))
+            sock.bind((host, port))
         except socket.error as msg:
             logging.error(msg)
             sys.exit(1)
 
         logging.info('Socket bind complete')
-        s.listen(10)
+        sock.listen(10)
 
         logging.info('Socket now listening')
 
-        start_new_thread(self.__listen_thread, (s,))
+        start_new_thread(self.__listen_thread, (sock,))
 
     # thread waiting for connecting sockets
-    def __listen_thread(self, s):
+    def __listen_thread(self, sock):
         logging.info('Listening thread started')
         connected_log = []
         last_time = time.time()
 
         while True:
-            conn, address = s.accept()
+            conn, address = sock.accept()
 
             c_time = int(time.time())
             if c_time % 5 == 0 and c_time != last_time:
-                logging.info("{}: {} is listening to connections".format(c_time, type(self).__name__))
+                logging.info("%d: %s is listening to connections",
+                             c_time, type(self).__name__)
                 last_time = c_time
 
             if address[0] not in connected_log:
                 connected_log.append(address[0])
-                logging.info("New client: {}@{}".format(address[0], address[1]))
+                logging.info("New client: %s@%d", address[0], address[1])
 
             start_new_thread(self.__client_thread, (conn, address))
 
@@ -75,7 +82,7 @@ class CommunicationHandler():
             # Skip the surrounding junk
             try:
                 data = raw_data.decode("utf-8").rstrip()
-            except UnicodeDecodeError as e:
+            except UnicodeDecodeError:
                 logging.error("Closed %s@%s due to encoding error", address[0], str(address[1]))
                 return
 
