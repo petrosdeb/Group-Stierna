@@ -1,0 +1,10 @@
+************* Module control.lateral.control
+E:  8, 0: Unable to import 'driving' (import-error)
+E:  9, 0: Unable to import 'picamera' (import-error)
+E: 11, 0: No name 'navigation' in module 'control.lateral' (no-name-in-module)
+************* Module control.lateral.navigation
+E: 75, 0: Missing parentheses in call to 'print' (<string>, line 75) (syntax-error)
+
+-----------------------------------
+Your code has been rated at 0.91/10
+

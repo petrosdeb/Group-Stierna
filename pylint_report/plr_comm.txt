@@ -1,0 +1,7 @@
+************* Module control.comm.comm
+E: 10, 0: Unable to import 'state' (import-error)
+R: 13,37: Too few public methods (1/2) (too-few-public-methods)
+
+------------------------------------------------------------------
+Your code has been rated at 9.10/10 (previous run: 9.85/10, -0.75)
+

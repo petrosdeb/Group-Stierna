@@ -1,0 +1,6 @@
+************* Module control.acc.handler
+R: 12,31: Too few public methods (0/2) (too-few-public-methods)
+
+------------------------------------------------------------------
+Your code has been rated at 9.90/10 (previous run: 9.90/10, +0.00)
+

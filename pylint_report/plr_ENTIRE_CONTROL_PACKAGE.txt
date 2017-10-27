@@ -1,0 +1,166 @@
+************* Module control.run
+E:  6, 0: No name 'concrete' in module 'core' (no-name-in-module)
+E:  6, 0: Unable to import 'core.concrete' (import-error)
+************* Module control.core.concrete
+E:  8, 0: Unable to import 'acc.handler' (import-error)
+E:  9, 0: Unable to import 'can.listener' (import-error)
+E: 10, 0: Unable to import 'can.writer' (import-error)
+E: 11, 0: Unable to import 'comm.comm' (import-error)
+E: 12, 0: No name 'interface' in module 'core' (no-name-in-module)
+E: 12, 0: Unable to import 'core.interface' (import-error)
+E: 13, 0: No name 'spoof' in module 'core' (no-name-in-module)
+E: 13, 0: Unable to import 'core.spoof' (import-error)
+C: 58, 4: Argument name "n" doesn't conform to snake_case naming style (invalid-name)
+C: 58, 4: Missing method docstring (missing-docstring)
+R: 17,37: Too few public methods (1/2) (too-few-public-methods)
+************* Module control.core.interface
+C:  7, 0: Missing class docstring (missing-docstring)
+C:  8, 4: Argument name "n" doesn't conform to snake_case naming style (invalid-name)
+R:  7, 0: Too few public methods (1/2) (too-few-public-methods)
+************* Module control.core.spoof
+E: 16, 0: No name 'interface' in module 'core' (no-name-in-module)
+E: 16, 0: Unable to import 'core.interface' (import-error)
+C: 39, 4: Argument name "n" doesn't conform to snake_case naming style (invalid-name)
+C: 39, 4: Missing method docstring (missing-docstring)
+R: 39, 4: Method could be a function (no-self-use)
+R: 29, 0: Too few public methods (1/2) (too-few-public-methods)
+************* Module control.acc.handler
+R: 12,31: Too few public methods (0/2) (too-few-public-methods)
+************* Module control.comm.comm
+R: 13,37: Too few public methods (1/2) (too-few-public-methods)
+************* Module control.lateral.control
+E:  8, 0: Unable to import 'driving' (import-error)
+E:  9, 0: Unable to import 'picamera' (import-error)
+E: 11, 0: No name 'navigation' in module 'control.lateral' (no-name-in-module)
+************* Module control.lateral.navigation
+E: 75, 0: Missing parentheses in call to 'print' (<string>, line 75) (syntax-error)
+
+
+Report
+======
+411 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |16     |16         |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |8      |8          |=          |87.50       |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |32     |32         |=          |93.75       |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|function |3      |3          |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    state (control.comm.comm,control.core.concrete)
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |459    |61.28 |NC       |NC         |
++----------+-------+------+---------+-----------+
+|docstring |100    |13.35 |NC       |NC         |
++----------+-------+------+---------+-----------+
+|comment   |38     |5.07  |NC       |NC         |
++----------+-------+------+---------+-----------+
+|empty     |152    |20.29 |NC       |NC         |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |0        |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |0.000    |=          |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |6      |6        |=          |
++-----------+-------+---------+-----------+
+|refactor   |6      |6        |=          |
++-----------+-------+---------+-----------+
+|warning    |0      |0        |=          |
++-----------+-------+---------+-----------+
+|error      |16     |16       |=          |
++-----------+-------+---------+-----------+
+
+
+
+% errors / warnings by module
+-----------------------------
+
++---------------------------+------+--------+---------+-----------+
+|module                     |error |warning |refactor |convention |
++===========================+======+========+=========+===========+
+|control.core.concrete      |50.00 |0.00    |16.67    |33.33      |
++---------------------------+------+--------+---------+-----------+
+|control.lateral.control    |18.75 |0.00    |0.00     |0.00       |
++---------------------------+------+--------+---------+-----------+
+|control.core.spoof         |12.50 |0.00    |33.33    |33.33      |
++---------------------------+------+--------+---------+-----------+
+|control.run                |12.50 |0.00    |0.00     |0.00       |
++---------------------------+------+--------+---------+-----------+
+|control.lateral.navigation |6.25  |0.00    |0.00     |0.00       |
++---------------------------+------+--------+---------+-----------+
+|control.core.interface     |0.00  |0.00    |16.67    |33.33      |
++---------------------------+------+--------+---------+-----------+
+|control.comm.comm          |0.00  |0.00    |16.67    |0.00       |
++---------------------------+------+--------+---------+-----------+
+|control.acc.handler        |0.00  |0.00    |16.67    |0.00       |
++---------------------------+------+--------+---------+-----------+
+
+
+
+Messages
+--------
+
++-----------------------+------------+
+|message id             |occurrences |
++=======================+============+
+|import-error           |10          |
++-----------------------+------------+
+|too-few-public-methods |5           |
++-----------------------+------------+
+|no-name-in-module      |5           |
++-----------------------+------------+
+|missing-docstring      |3           |
++-----------------------+------------+
+|invalid-name           |3           |
++-----------------------+------------+
+|syntax-error           |1           |
++-----------------------+------------+
+|no-self-use            |1           |
++-----------------------+------------+
+
+
+
+
+------------------------------------------------------------------
+Your code has been rated at 7.76/10 (previous run: 7.76/10, +0.00)
+
